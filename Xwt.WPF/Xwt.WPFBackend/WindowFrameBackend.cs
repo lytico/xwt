@@ -60,10 +60,9 @@ namespace Xwt.WPFBackend
 		{
 		}
 
-		public virtual void Dispose (bool disposing)
-		{
-			if (disposing)
-				Window.Close ();
+		public virtual void Dispose ()
+		{	
+			Window.Close ();
 		}
 
 		public System.Windows.Window Window {
@@ -194,6 +193,9 @@ namespace Xwt.WPFBackend
 				size.Height -= SystemParameters.MenuBarHeight;
 				loc.Y += SystemParameters.MenuBarHeight;
 			}
+
+			size.Width = Math.Max (0, size.Width);
+			size.Height = Math.Max (0, size.Height);
 
 			return new Rectangle (loc, size);
 		}

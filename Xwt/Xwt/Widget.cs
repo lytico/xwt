@@ -51,6 +51,7 @@ namespace Xwt
 		WindowFrame parentWindow;
 		double minWidth = -1, minHeight = -1;
 		double naturalWidth = -1, naturalHeight = -1;
+		CursorType cursor;
 		
 		EventHandler<DragOverCheckEventArgs> dragOverCheck;
 		EventHandler<DragOverEventArgs> dragOver;
@@ -238,8 +239,11 @@ namespace Xwt
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
-			if (Backend != null)
-				Backend.Dispose (disposing);
+			
+			// Don't dispose the backend if this object is being finalized
+			// The backend has to handle the finalizing on its own
+			if (disposing && BackendCreated)
+				Backend.Dispose ();
 		}
 		
 		public WindowFrame ParentWindow {
@@ -451,6 +455,20 @@ namespace Xwt
 		public string TooltipText {
 			get { return Backend.TooltipText; }
 			set { Backend.TooltipText = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the cursor shape to be used when the mouse is over the widget
+		/// </summary>
+		/// <value>
+		/// The cursor.
+		/// </value>
+		public CursorType Cursor {
+			get { return cursor ?? CursorType.Arrow; }
+			set {
+				cursor = value;
+				Backend.SetCursor (value);
+			}
 		}
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)

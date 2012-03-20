@@ -1,21 +1,21 @@
-// 
-// IWindowFrameBackend.cs
-//  
+//
+// TextLayoutContext.cs
+//
 // Author:
-//       Lluis Sanchez <lluis@xamarin.com>
-// 
-// Copyright (c) 2011 Xamarin Inc
-// 
+//       Eric Maupin <ermau@xamarin.com>
+//
+// Copyright (c) 2012 Xamarin, Inc.
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,31 +23,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 
-namespace Xwt.Backends
+using System.Drawing;
+
+namespace Xwt.WPFBackend
 {
-	public interface IWindowFrameBackend: IBackend
+	internal class TextLayoutContext
 	{
-		void Initialize (IWindowFrameEventSink eventSink);
-		void Dispose ();
-		
-		Rectangle Bounds { get; set; }
-		bool Visible { get; set; }
-		string Title { get; set; }
-		
-		bool Decorated { get; set; }
-		bool ShowInTaskbar { get; set; }
-	}
-	
-	public interface IWindowFrameEventSink
-	{
-		void OnBoundsChanged (Rectangle bounds);
-	}
-	
-	public enum WindowFrameEvent
-	{
-		BoundsChanged = 1
+		private readonly DrawingContext context;
+
+		internal TextLayoutContext (DrawingContext context)
+		{
+			this.context = context;
+		}
+
+		internal double Width;
+		internal string Text;
+		internal Font Font;
+
+		public Size GetSize()
+		{
+			return context.Graphics.MeasureString (Text, Font, (int) Width).ToXwtSize ();
+		}
 	}
 }
-

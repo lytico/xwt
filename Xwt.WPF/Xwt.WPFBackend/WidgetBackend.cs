@@ -52,17 +52,24 @@ namespace Xwt.WPFBackend
 		protected virtual void Initialize ()
 		{
 		}
-
-		public virtual void Dispose (bool disposing)
+		
+		~WidgetBackend ()
+		{
+			Dispose (false);
+		}
+		
+		public void Dispose ()
+		{
+			GC.SuppressFinalize (this);
+			Dispose (true);
+		}
+		
+		protected virtual void Dispose (bool disposing)
 		{
 		}
 
 		public IWidgetEventSink EventSink {
 			get { return eventSink; }
-		}
-
-		public Widget Frontend {
-			get { return frontend; }
 		}
 
 		public object NativeWidget {
@@ -186,8 +193,10 @@ namespace Xwt.WPFBackend
 
 		System.Windows.Size GetWidgetDesiredSize ()
 		{
-			if (!Widget.IsMeasureValid)
+			if (!Widget.IsMeasureValid) {
+				Widget.UpdateLayout ();
 				Widget.Measure (new System.Windows.Size (Double.PositiveInfinity, Double.PositiveInfinity));
+			}
 
 			return Widget.DesiredSize;
 		}
@@ -195,25 +204,25 @@ namespace Xwt.WPFBackend
 		public virtual WidgetSize GetPreferredWidth ()
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width) + frontend.Margin.HorizontalSpacing;
+			return new WidgetSize (size.Width);
 		}
 
 		public virtual WidgetSize GetPreferredHeight ()
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
+			return new WidgetSize (size.Height);
 		}
 
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Width) + frontend.Margin.HorizontalSpacing;
+			return new WidgetSize (size.Width);
 		}
 
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
 			var size = GetWidgetDesiredSize ();
-			return new WidgetSize (size.Height) + frontend.Margin.VerticalSpacing;
+			return new WidgetSize (size.Height);
 		}
 
 		public void SetMinSize (double width, double height)
@@ -235,6 +244,11 @@ namespace Xwt.WPFBackend
 			Widget.Height = height / HeightPixelRatio;
 		}
 
+		public void SetCursor (CursorType cursor)
+		{
+			// TODO
+		}
+		
 		public virtual void UpdateLayout ()
 		{
 		}
@@ -260,6 +274,12 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.KeyReleased:
 						Widget.KeyDown += WidgetKeyUpHandler;
 						break;
+					case WidgetEvent.ButtonPressed:
+						Widget.MouseDown += WidgetMouseDownHandler;
+						break;
+					case WidgetEvent.ButtonReleased:
+						Widget.MouseUp += WidgetMouseUpHandler;
+						break;
 					case WidgetEvent.GotFocus:
 						Widget.GotFocus += WidgetGotFocusHandler;
 						break;
@@ -271,6 +291,9 @@ namespace Xwt.WPFBackend
 						break;
 					case WidgetEvent.MouseExited:
 						Widget.MouseLeave += WidgetMouseExitedHandler;
+						break;
+					case WidgetEvent.BoundsChanged:
+						Widget.SizeChanged += WidgetOnSizeChanged;
 						break;
 				}
 			}
@@ -297,11 +320,20 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.KeyReleased:
 						Widget.KeyUp -= WidgetKeyUpHandler;
 						break;
+					case WidgetEvent.ButtonPressed:
+						Widget.MouseDown -= WidgetMouseDownHandler;
+						break;
+					case WidgetEvent.ButtonReleased:
+						Widget.MouseUp -= WidgetMouseUpHandler;
+						break;
 					case WidgetEvent.MouseEntered:
 						Widget.MouseEnter -= WidgetMouseEnteredHandler;
 						break;
 					case WidgetEvent.MouseExited:
 						Widget.MouseLeave -= WidgetMouseExitedHandler;
+						break;
+					case WidgetEvent.BoundsChanged:
+						Widget.SizeChanged -= WidgetOnSizeChanged;
 						break;
 				}
 			}
@@ -363,6 +395,32 @@ namespace Xwt.WPFBackend
 			return true;
 		}
 
+		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
+		{
+			Toolkit.Invoke (delegate () {
+				eventSink.OnButtonPressed (ToXwtButtonArgs (e));
+			});
+		}
+
+		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
+		{
+			var args = ToXwtButtonArgs (e);
+			Toolkit.Invoke (delegate () {
+				eventSink.OnButtonReleased (ToXwtButtonArgs (e));
+			});
+		}
+
+		ButtonEventArgs ToXwtButtonArgs (MouseButtonEventArgs e)
+		{
+			var pos = e.GetPosition (Widget);
+			return new ButtonEventArgs () {
+				X = pos.X,
+				Y = pos.Y,
+				MultiplePress = e.ClickCount,
+				Button = e.ChangedButton.ToXwtButton ()
+			};
+		}
+
 		void WidgetGotFocusHandler (object o, RoutedEventArgs e)
 		{
 			Toolkit.Invoke (delegate {
@@ -407,6 +465,12 @@ namespace Xwt.WPFBackend
 		private void WidgetMouseExitedHandler (object sender, MouseEventArgs e)
 		{
 			Toolkit.Invoke (eventSink.OnMouseExited);
+		}
+
+		private void WidgetOnSizeChanged (object sender, SizeChangedEventArgs e)
+		{
+			if (Widget.IsVisible)
+				Toolkit.Invoke (this.eventSink.OnBoundsChanged);
 		}
 	}
 

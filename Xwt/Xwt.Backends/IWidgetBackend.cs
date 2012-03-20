@@ -32,7 +32,7 @@ namespace Xwt.Backends
 	public interface IWidgetBackend: IBackend
 	{
 		void Initialize (IWidgetEventSink eventSink);
-		void Dispose (bool disposing);
+		void Dispose ();
 		
 		bool Visible { get; set; }
 		bool Sensitive { get; set; }
@@ -99,6 +99,14 @@ namespace Xwt.Backends
 		object Font { get; set; }
 		Color BackgroundColor { get; set; }
 		string TooltipText { get; set; }
+		
+		/// <summary>
+		/// Sets the cursor shape to be used when the mouse is over the widget
+		/// </summary>
+		/// <param name='cursorType'>
+		/// The cursor type.
+		/// </param>
+		void SetCursor (CursorType cursorType);
 	}
 	
 	public interface IWidgetEventSink
