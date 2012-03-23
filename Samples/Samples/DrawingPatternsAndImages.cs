@@ -69,17 +69,19 @@ namespace Samples
 			ctx.SetColor (arcColor);
 			ctx.Fill ();
 			
+			ctx.Restore ();
+			
 			// ImagePattern
-			
 			ctx.Save ();
-			
 			ctx.Translate (x + 130, y);
+			
 			ctx.Pattern = new ImagePattern (img);
-			ctx.Rectangle (0, 0, 100, 100);
+			ctx.Rectangle (10, 10, 100, 100);
+			
 			ctx.Fill ();
-			ctx.Restore ();
 			
 			ctx.Restore ();
+			
 		}	
 	}
 }
