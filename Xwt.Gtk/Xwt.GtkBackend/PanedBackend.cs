@@ -68,7 +68,7 @@ namespace Xwt.GtkBackend
 				Widget.Remove (Widget.Child2);
 		}
 		
-		public void UpdatePanel (int panel, bool resize)
+		public void UpdatePanel (int panel, bool resize, double whatever)
 		{
 			if (panel == 1)
 				((Gtk.Paned.PanedChild)Widget [Widget.Child1]).Resize = resize;
@@ -88,7 +88,8 @@ namespace Xwt.GtkBackend
 
 		public void GetPanelSizes (double totalSize, out double panel1Size, out double panel2Size)
 		{
-			throw new NotSupportedException ();
+			panel1Size=0;
+			panel2Size=0;
 		}
 	}
 }

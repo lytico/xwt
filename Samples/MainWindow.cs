@@ -66,7 +66,7 @@ namespace Samples
 			AddSample (n, "Transformations", typeof(DrawingTransforms));
 			AddSample (n, "Images and Patterns", typeof(DrawingPatternsAndImages));
 			AddSample (n, "Text", typeof(DrawingText));
-			
+			AddSample (n, "Performance", typeof(DrawingPerformance));
 			AddSample (null, "Frames", typeof(Frames));
 			AddSample (null, "Images", typeof(Images));
 			AddSample (null, "Labels", typeof(Labels));
@@ -92,7 +92,6 @@ namespace Samples
 			
 			box.Panel2.Content = sampleBox;
 			box.Panel2.Resize = true;
-			box.Position = 160;
 			
 			Content = box;
 			
