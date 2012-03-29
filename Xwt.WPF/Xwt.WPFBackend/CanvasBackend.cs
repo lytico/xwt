@@ -56,8 +56,8 @@ namespace Xwt.WPFBackend
 			this.fullRedraw = true;
 
 			if (!this.queued) {
-				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
-				this.queued = true;
+			    Toolkit.QueueExitAction (Render);
+			    this.queued = true;
 			}
 		}
 
@@ -69,8 +69,8 @@ namespace Xwt.WPFBackend
 			this.dirtyRects.Add (rect.ToInt32Rect());
 
 			if (!this.queued) {
-				Toolkit.QueueExitAction (() => OnRender (this, EventArgs.Empty));
-				this.queued = true;
+			    Toolkit.QueueExitAction (Render);
+			    this.queued = true;
 			}
 		}
 
@@ -86,14 +86,17 @@ namespace Xwt.WPFBackend
 
 		public void SetChildBounds (IWidgetBackend widget, Rectangle bounds)
 		{
-			UIElement element = widget.NativeWidget as UIElement;
+			FrameworkElement element = widget.NativeWidget as FrameworkElement;
 			if (element == null)
 				throw new ArgumentException();
 
-			SWC.Canvas.SetTop (element, bounds.Top);
-			SWC.Canvas.SetLeft (element, bounds.Left);
-			SWC.Canvas.SetRight (element, bounds.Right);
-			SWC.Canvas.SetBottom (element, bounds.Bottom);
+			double hratio = HeightPixelRatio;
+			double wratio = WidthPixelRatio;
+
+			SWC.Canvas.SetTop (element, bounds.Top * hratio);
+			SWC.Canvas.SetLeft (element, bounds.Left * wratio);
+			element.Height = (bounds.Height > 0) ? bounds.Height * hratio : 0;
+			element.Width = (bounds.Width > 0) ? bounds.Width * wratio : 0;
 		}
 
 		public void RemoveChild (IWidgetBackend widget)
@@ -129,6 +132,11 @@ namespace Xwt.WPFBackend
 
 		private void OnRender (object sender, EventArgs e)
 		{
+			Render();
+		}
+
+		private void Render()
+		{
 			if (!Widget.IsVisible)
 				return;
 
@@ -162,8 +170,22 @@ namespace Xwt.WPFBackend
 				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));
 				this.fullRedraw = false;
 			} else {
-				for (int i = 0; i < this.dirtyRects.Count; ++i)
-					this.wbitmap.AddDirtyRect (this.dirtyRects [i]);
+				for (int i = 0; i < this.dirtyRects.Count; ++i) {
+					Int32Rect r = this.dirtyRects [i];
+					if (r.X >= this.wbitmap.PixelWidth || r.Y >= this.wbitmap.PixelHeight)
+						continue;
+
+					if (r.X < 0)
+						r.X = 0;
+					if (r.Y < 0)
+						r.Y = 0;
+					if (r.X + r.Width > this.wbitmap.PixelWidth)
+						r.Width = this.wbitmap.PixelWidth - r.X;
+					if (r.Y + r.Height > this.wbitmap.PixelHeight)
+						r.Height = this.wbitmap.PixelHeight - r.Y;
+
+					this.wbitmap.AddDirtyRect (r);
+				}
 			}
 
 			this.dirtyRects.Clear();

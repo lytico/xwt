@@ -55,14 +55,9 @@ namespace Xwt.Mac
 			Widget.AutoresizesSubviews = true;
 		}
 		
-		public override WidgetSize GetPreferredHeight ()
+		protected override Size GetNaturalSize ()
 		{
-			return new WidgetSize (0, 100);
-		}
-		
-		public override WidgetSize GetPreferredWidth ()
-		{
-			return new WidgetSize (0, 100);
+			return EventSink.GetDefaultNaturalSize ();
 		}
 		
 		protected abstract NSTableView CreateView ();
@@ -161,10 +156,10 @@ namespace Xwt.Mac
 		}
 	}
 	
-	class ScrollView: NSScrollView, IViewObject<NSScrollView>
+	class ScrollView: NSScrollView, IViewObject
 	{
 		public Widget Frontend { get; set; }
-		public NSScrollView View {
+		public NSView View {
 			get { return this; }
 		}
 	}

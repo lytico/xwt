@@ -29,14 +29,19 @@
 // THE SOFTWARE.
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using SW = System.Windows;
+using SWM = System.Windows.Media;
 using SD = System.Drawing;
+using SDI = System.Drawing.Imaging;
 using Xwt.Drawing;
+using Color = Xwt.Drawing.Color;
 using FontStretch = Xwt.Drawing.FontStretch;
 using FontStyle = Xwt.Drawing.FontStyle;
 using FontWeight = Xwt.Drawing.FontWeight;
+using ImageFormat = Xwt.Drawing.ImageFormat;
 
 namespace Xwt.WPFBackend
 {
@@ -141,6 +146,14 @@ namespace Xwt.WPFBackend
 				style |= SD.FontStyle.Bold;
 
 			return new SD.Font (font.Family, (float)font.Size, style);
+		}
+		
+		public static SD.StringTrimming ToDrawingStringTrimming (this Xwt.Drawing.TextTrimming value)
+		{
+			if (value == Xwt.Drawing.TextTrimming.Word) return SD.StringTrimming.Word;
+			if (value == Xwt.Drawing.TextTrimming.WordElipsis) return SD.StringTrimming.EllipsisWord;
+
+			return SD.StringTrimming.Word;
 		}
 		
 		public static FontStyle ToXwtFontStyle (this SW.FontStyle value)
@@ -258,6 +271,122 @@ namespace Xwt.WPFBackend
 				case PointerButton.Middle: return MouseButton.Middle;
 				default: return MouseButton.Right;
 			}
+		}
+
+		public static SDI.PixelFormat ToPixelFormat (this ImageFormat self)
+		{
+			switch (self) {
+				case ImageFormat.ARGB32:
+					return SDI.PixelFormat.Format32bppArgb;
+				case ImageFormat.RGB24:
+					return SDI.PixelFormat.Format24bppRgb;
+				default:
+					throw new ArgumentException();
+			}
+		}
+
+		public static SDI.PixelFormat ToPixelFormat (this SW.Media.PixelFormat self)
+		{
+			if (self == SWM.PixelFormats.Rgb24)
+				return SDI.PixelFormat.Format24bppRgb;
+			if (self == SWM.PixelFormats.Bgra32)
+				return SDI.PixelFormat.Format32bppArgb;
+			if (self == SWM.PixelFormats.Pbgra32)
+				return SDI.PixelFormat.Format32bppPArgb;
+			if (self == SWM.PixelFormats.Prgba64)
+				return SDI.PixelFormat.Format64bppPArgb;
+			if (self == SWM.PixelFormats.Indexed1)
+				return SDI.PixelFormat.Format1bppIndexed;
+			if (self == SWM.PixelFormats.Indexed4)
+				return SDI.PixelFormat.Format4bppIndexed;
+			if (self == SWM.PixelFormats.Indexed8)
+				return SDI.PixelFormat.Format8bppIndexed;
+			if (self == SWM.PixelFormats.Gray16)
+				return SDI.PixelFormat.Format16bppGrayScale;
+			if (self == SWM.PixelFormats.Bgr24)
+				return SDI.PixelFormat.Format24bppRgb;
+			if (self == SWM.PixelFormats.Bgr32)
+				return SDI.PixelFormat.Format32bppRgb;
+
+			throw new ArgumentException();
+		}
+
+		public static SD.Bitmap AsBitmap (object backend)
+		{
+			var bmp = backend as SD.Bitmap;
+			if (bmp == null) {
+				var bs = backend as SWM.Imaging.BitmapSource;
+				if (bs != null) {
+					bmp = new SD.Bitmap (bs.PixelWidth, bs.PixelHeight, bs.Format.ToPixelFormat ());
+					SDI.BitmapData data = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), SDI.ImageLockMode.WriteOnly,
+					                                bmp.PixelFormat);
+					bs.CopyPixels (new Int32Rect (0, 0, bmp.Width, bmp.Height), data.Scan0, data.Height * data.Stride, data.Stride);
+					bmp.UnlockBits (data);
+				}
+			}
+
+			return bmp;
+		}
+
+		[DllImport ("gdi32")]
+		private static extern int DeleteObject (IntPtr o);
+
+		public static SWM.ImageSource AsImageSource (object nativeImage)
+		{
+			var source = nativeImage as SWM.ImageSource;
+			if (source == null) {
+				var bitmap = nativeImage as SD.Bitmap;
+				if (bitmap != null) {
+					IntPtr ptr = bitmap.GetHbitmap ();
+
+					try {
+						return SW.Interop.Imaging.CreateBitmapSourceFromHBitmap (ptr, IntPtr.Zero, Int32Rect.Empty,
+																	  SWM.Imaging.BitmapSizeOptions.FromEmptyOptions ());
+					}
+					finally {
+						DeleteObject (ptr);
+					}
+				}
+			}
+
+			return source;
+		}
+
+		//
+		// Drag and Drop
+		//
+		public static DragDropAction ToXwtDropAction (this DragDropEffects value)
+		{
+			var action = DragDropAction.None;
+			if ((value & DragDropEffects.Copy) > 0) action |= DragDropAction.Copy;
+			if ((value & DragDropEffects.Move) > 0) action |= DragDropAction.Move;
+			if ((value & DragDropEffects.Link) > 0) action |= DragDropAction.Link;
+			return action;
+		}
+
+		public static DragDropEffects ToWpfDropEffect (this DragDropAction value)
+		{
+			var effects = DragDropEffects.None;
+			if ((value & DragDropAction.Copy) > 0) effects |= DragDropEffects.Copy;
+			if ((value & DragDropAction.Move) > 0) effects |= DragDropEffects.Move;
+			if ((value & DragDropAction.Link) > 0) effects |= DragDropEffects.Link;
+			return effects;
+		}
+
+		public static string ToWpfDragType (this TransferDataType type)
+		{
+			if (type == TransferDataType.Text) return DataFormats.UnicodeText;
+			if (type == TransferDataType.Rtf) return DataFormats.Rtf;
+			if (type == TransferDataType.Uri) return DataFormats.FileDrop;
+			return type.Id;
+		}
+
+		public static TransferDataType ToXwtDragType (this string type)
+		{
+			if (type == DataFormats.UnicodeText) return TransferDataType.Text;
+			if (type == DataFormats.Rtf) return TransferDataType.Rtf;
+			if (type == DataFormats.FileDrop) return TransferDataType.Uri;
+			return TransferDataType.FromId (type);
 		}
 	}
 }

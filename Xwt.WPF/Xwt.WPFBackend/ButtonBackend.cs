@@ -71,14 +71,13 @@ namespace Xwt.WPFBackend
 					Button.ClearValue (SWC.Control.BorderBrushProperty);
 					break;
 				case ButtonStyle.Flat:
-					Button.Background = SystemColors.ControlBrush;
-					Button.ClearValue (SWC.Control.BorderThicknessProperty);
-					Button.ClearValue (SWC.Control.BorderBrushProperty);
+					Button.Background = Brushes.Transparent;
+					Button.BorderBrush = Brushes.Transparent;
 					break;
 				case ButtonStyle.Borderless:
 					Button.ClearValue (SWC.Control.BackgroundProperty);
 					Button.BorderThickness = new Thickness (0);
-					Button.BorderBrush = new SolidColorBrush (Colors.Transparent);
+					Button.BorderBrush = Brushes.Transparent;
 					break;
 			}
 			Button.InvalidateMeasure ();
@@ -89,16 +88,17 @@ namespace Xwt.WPFBackend
 			Button.InvalidateMeasure ();
 		}
 
-		public void SetContent(string label, object imageBackend, ContentPosition position) {
+		public void SetContent (string label, object imageBackend, ContentPosition position)
+		{
 			if (imageBackend == null)
-			{
 				Button.Content = label;
-			}
+			else if (String.IsNullOrEmpty (label))
+				Button.Content = new SWC.Image { Source = DataConverter.AsImageSource (imageBackend) };
 			else
 			{
 				SWC.DockPanel grid = new SWC.DockPanel ();
 
-				var img = (SWMI.BitmapSource)imageBackend;
+				var img = DataConverter.AsImageSource (imageBackend);
 				SWC.Image imageCtrl = new SWC.Image
 				{
 					Source = img,

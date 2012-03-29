@@ -29,6 +29,7 @@ using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using Xwt.Engine;
+using Xwt.Drawing;
 
 namespace Xwt.Mac
 {
@@ -39,9 +40,17 @@ namespace Xwt.Mac
 			public NSAttributedString Text;
 			public NSFont Font;
 			public string PlainText;
+			public double Width = -1;
+			public double Heigth = -1;
+			public TextTrimming TextTrimming;
 		}
 		
 		public object Create (Xwt.Drawing.Context context)
+		{
+			return new LayoutInfo ();
+		}
+		
+		public object Create (ICanvasBackend canvas)
 		{
 			return new LayoutInfo ();
 		}
@@ -62,6 +71,20 @@ namespace Xwt.Mac
 		
 		public void SetWidth (object backend, double value)
 		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.Width = value;
+		}
+		
+		public void SetHeigth (object backend, double value)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.Heigth = value;
+		}
+		
+		public void SetTrimming (object backend, TextTrimming value)
+		{
+			LayoutInfo li = (LayoutInfo)backend;
+			li.TextTrimming = value;
 		}
 		
 		void UpdateInfo (LayoutInfo li)

@@ -45,7 +45,15 @@ namespace Xwt.WPFBackend
 
 		public TreeViewBackend ()
 		{
-			Tree = new SWC.TreeView ();
+			Tree = new WpfTreeView ();
+		}
+
+		protected override double DefaultNaturalHeight {
+			get { return -1; }
+		}
+
+		protected override double DefaultNaturalWidth {
+			get { return -1; }
 		}
 
 		public SWC.TreeView Tree
@@ -60,11 +68,6 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public void UnselectRow (TreePosition pos)
-		{
-			throw new NotImplementedException ();
-		}
-
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			Tree.Items.Clear ();
@@ -72,6 +75,7 @@ namespace Xwt.WPFBackend
 			if (treeStore != null)
 			{
 				TreeNode node = treeStore.RootNode;
+				node.TreeViewData.Add (Tuple.Create<TreeViewBackend, SWC.ItemsControl>(this, Tree));
 				foreach (TreeNode child in node.Children)
 				{
 					Tree.Items.Add (GenerateTreeViewItem (child));
@@ -79,9 +83,9 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private MultiColumnTreeViewItem GenerateTreeViewItem (TreeNode node)
+		internal MultiColumnTreeViewItem GenerateTreeViewItem (TreeNode node)
 		{
-			MultiColumnTreeViewItem item = new MultiColumnTreeViewItem (node);
+			MultiColumnTreeViewItem item = new MultiColumnTreeViewItem (this, node);
 
 			foreach (ListViewColumn column in columns)
 			{
@@ -94,11 +98,6 @@ namespace Xwt.WPFBackend
 			}
 
 			return item;
-		}
-
-		public void SelectRow (TreePosition pos)
-		{
-			throw new NotImplementedException ();
 		}
 
 		public TreePosition[] SelectedRows
@@ -115,31 +114,38 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		// TODO
+		public bool HeadersVisible
+		{
+			get;
+			set;
+		}
+
+		public void SelectRow (TreePosition pos)
+		{
+			// TODO
+		}
+
+		public void UnselectRow (TreePosition pos)
+		{
+			// TODO
+		}
+
 		public bool IsRowSelected (TreePosition row)
 		{
-			throw new NotImplementedException ();
+			// TODO
+			return false;
 		}
 
 		public bool IsRowExpanded (TreePosition row)
 		{
-			throw new NotImplementedException ();
+			// TODO
+			return false;
 		}
 
 		public void ExpandToRow (TreePosition pos)
 		{
-			throw new NotImplementedException();
-		}
-
-		public bool HeadersVisible
-		{
-			get
-			{
-				throw new NotImplementedException ();
-			}
-			set
-			{
-				throw new NotImplementedException ();
-			}
+			// TODO
 		}
 
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
@@ -149,32 +155,32 @@ namespace Xwt.WPFBackend
 
 		public void ExpandRow (TreePosition row, bool expandChildren)
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void CollapseRow (TreePosition row)
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void ScrollToRow (TreePosition pos)
 		{
-			throw new NotImplementedException();
+			// TODO
 		}
 
 		public void UnselectAll ()
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void SelectAll ()
 		{
-			throw new NotImplementedException ();
+			// TODO
 		}
 
 		public void UpdateColumn (ListViewColumn column, object handle, ListViewColumnChange change)
@@ -223,6 +229,17 @@ namespace Xwt.WPFBackend
 				if (((TableViewEvent)eventId) == TableViewEvent.SelectionChanged)
 					Tree.SelectedItemChanged -= HandleWidgetSelectionChanged;
 			}
+		}
+	}
+
+	class WpfTreeView : SWC.TreeView, IWpfWidget
+	{
+		public WidgetBackend Backend { get; set; }
+
+		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
+		{
+			var s = base.MeasureOverride (constraint);
+			return Backend.MeasureOverride (constraint, s);
 		}
 	}
 }

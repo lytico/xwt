@@ -51,6 +51,12 @@ namespace Xwt.Mac
 				Widget.SizeToFit ();
 			}
 		}
+		
+		protected override Size GetNaturalSize ()
+		{
+			var s = base.GetNaturalSize ();
+			return new Size (EventSink.GetDefaultNaturalSize ().Width, s.Height);
+		}
 
 		#region ITextEntryBackend implementation
 		public string Text {
@@ -91,7 +97,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class CustomTextField: NSTextField, IViewObject<NSTextField>
+	class CustomTextField: NSTextField, IViewObject
 	{
 		ITextEntryEventSink eventSink;
 		
@@ -100,7 +106,7 @@ namespace Xwt.Mac
 			this.eventSink = eventSink;
 		}
 		
-		public NSTextField View {
+		public NSView View {
 			get {
 				return this;
 			}

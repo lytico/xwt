@@ -38,6 +38,8 @@ namespace Xwt.WPFBackend
 			if (graphics == null)
 				throw new ArgumentNullException ("graphics");
 
+			graphics.SmoothingMode = SmoothingMode.HighSpeed;
+			graphics.PixelOffsetMode = PixelOffsetMode.Half;
 			Graphics = graphics;
 		}
 
@@ -50,6 +52,7 @@ namespace Xwt.WPFBackend
 			Pen = new Pen (context.Pen.Brush, context.Pen.Width);
 			Brush = (Brush)context.Brush.Clone ();
 			Path = (GraphicsPath) context.Path.Clone();
+			Transform = Graphics.Transform;
 			
 			CurrentX = context.CurrentX;
 			CurrentY = context.CurrentY;
@@ -60,6 +63,7 @@ namespace Xwt.WPFBackend
 		internal Font Font = new Font (FontFamily.GenericSansSerif, 12);
 		internal Pen Pen = new Pen (Color.Black, 1);
 		internal Brush Brush = new SolidBrush (Color.Black);
+		internal Matrix Transform;
 
 		internal float CurrentX;
 		internal float CurrentY;
@@ -91,6 +95,10 @@ namespace Xwt.WPFBackend
 			Pen = dc.Pen;
 			Brush = dc.Brush;
 			Path = dc.Path;
+			if (dc.Transform != null)
+				Graphics.Transform = dc.Transform;
+			else
+				Graphics.ResetTransform ();
 
 			CurrentX = dc.CurrentX;
 			CurrentY = dc.CurrentY;

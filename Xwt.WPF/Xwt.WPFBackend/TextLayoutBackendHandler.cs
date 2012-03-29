@@ -3,6 +3,7 @@
 //
 // Author:
 //       Eric Maupin <ermau@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 //
 // Copyright (c) 2012 Xamarin, Inc.
 //
@@ -25,9 +26,11 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
+using Font = Xwt.Drawing.Font;
 
 namespace Xwt.WPFBackend
 {
@@ -40,11 +43,22 @@ namespace Xwt.WPFBackend
 			return new TextLayoutContext (drawingContext);
 		}
 
+		public object Create (ICanvasBackend canvas)
+		{
+			var drawingContext = new DrawingContext (Graphics.FromImage (new Bitmap (1, 1)));
+			return new TextLayoutContext (drawingContext);
+		}
+
 		public void SetWidth (object backend, double value)
 		{
 			((TextLayoutContext) backend).Width = value;
 		}
-
+		
+		public void SetHeigth (object backend, double value)
+		{
+			((TextLayoutContext) backend).Heigth = value;
+		}
+		
 		public void SetText (object backend, string text)
 		{
 			((TextLayoutContext) backend).Text = text;
@@ -54,10 +68,16 @@ namespace Xwt.WPFBackend
 		{
 			((TextLayoutContext) backend).Font = font.ToDrawingFont();
 		}
-
+		
+		public void SetTrimming (object backend, TextTrimming textTrimming)
+		{
+			((TextLayoutContext) backend).StringTrimming = textTrimming.ToDrawingStringTrimming();
+			
+		}
+		
 		public Size GetSize (object backend)
 		{
-			return new Size (0,0);
+			return ((TextLayoutContext) backend).GetSize ();
 		}
 	}
 }

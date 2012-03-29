@@ -27,9 +27,15 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Xwt.Backends;
 using Xwt.WPFBackend.Interop;
+using Color = System.Drawing.Color;
 using SWM = System.Windows.Media;
 using SWMI = System.Windows.Media.Imaging;
 
@@ -57,14 +63,16 @@ namespace Xwt.WPFBackend
 
 			switch (id) {
 			case StockIcons.Add:
-				throw new NotImplementedException();
+				return NativeMethods.GetImage (NativeStockIcon.Help, options);
+				//throw new NotImplementedException();
 			case StockIcons.Error:
 				return NativeMethods.GetImage (NativeStockIcon.Error, options);
 			case StockIcons.Information:
 				return NativeMethods.GetImage (NativeStockIcon.Info, options);
 			case StockIcons.OrientationLandscape:
 			case StockIcons.OrientationPortrait:
-				throw new NotImplementedException();
+				return NativeMethods.GetImage (NativeStockIcon.Help, options);
+				//throw new NotImplementedException();
 			case StockIcons.Question:
 				return NativeMethods.GetImage (NativeStockIcon.Help, options);
 			case StockIcons.Remove:
@@ -105,9 +113,15 @@ namespace Xwt.WPFBackend
 
 		public override Size GetSize (object handle)
 		{
-			var img = (SWMI.BitmapSource)handle;
+			BitmapSource source = handle as BitmapSource;
+			if (source != null)
+				return new Size (source.PixelWidth, source.PixelHeight);
 
-			return new Size (img.PixelWidth, img.PixelHeight);
+			Bitmap bitmp = handle as Bitmap;
+			if (bitmp != null)
+				return new Size (bitmp.Width, bitmp.Height);
+
+			throw new ArgumentException();
 		}
 
 		public override object Resize (object handle, double width, double height)
@@ -156,7 +170,14 @@ namespace Xwt.WPFBackend
 
 		public override object ChangeOpacity (object backend, double opacity)
 		{
-			throw new NotImplementedException ();
+			Bitmap bitmap = DataConverter.AsBitmap (backend);
+			if (bitmap == null)
+				throw new ArgumentException ();
+			Bitmap result = new Bitmap (bitmap.Width, bitmap.Height, bitmap.PixelFormat);
+			Graphics g = Graphics.FromImage (result);
+			ContextBackendHandler.DrawImageCore (g, bitmap, 0, 0, bitmap.Width, bitmap.Height, (float)opacity);
+			g.Dispose ();
+			return result;
 		}
 
 		public override void CopyArea (object srcHandle, int srcX, int srcY, int width, int height, object destHandle, int destX, int destY)

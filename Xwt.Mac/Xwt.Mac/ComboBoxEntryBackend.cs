@@ -48,6 +48,12 @@ namespace Xwt.Mac
 			ViewObject = new MacComboBox (EventSink);
 			Widget.SizeToFit ();
 		}
+		
+		protected override Size GetNaturalSize ()
+		{
+			var s = base.GetNaturalSize ();
+			return new Size (EventSink.GetDefaultNaturalSize ().Width, s.Height);
+		}
 
 		#region IComboBoxEntryBackend implementation
 		public ITextEntryBackend TextEntryBackend {
@@ -91,7 +97,7 @@ namespace Xwt.Mac
 		#endregion
 	}
 	
-	class MacComboBox: NSComboBox, IViewObject<NSComboBox>, IViewObject<NSTextField>
+	class MacComboBox: NSComboBox, IViewObject
 	{
 		IComboBoxEventSink eventSink;
 		ITextEntryEventSink entryEventSink;
@@ -106,24 +112,13 @@ namespace Xwt.Mac
 			this.entryEventSink = entryEventSink;
 		}
 		
-		#region IViewObject implementation
-		NSComboBox IViewObject<NSComboBox>.View {
+		public NSView View {
 			get {
 				return this;
 			}
 		}
 
 		public Widget Frontend { get; set; }
-		
-		#endregion
-
-		#region IViewObject implementation
-		NSTextField IViewObject<NSTextField>.View {
-			get {
-				return this;
-			}
-		}
-		#endregion
 		
 		public override void DidChange (MonoMac.Foundation.NSNotification notification)
 		{

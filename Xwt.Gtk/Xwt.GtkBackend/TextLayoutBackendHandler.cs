@@ -3,6 +3,7 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//       Lytico (http://limada.sourceforge.net)
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -28,12 +29,15 @@ using System;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
+using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
 	public class TextLayoutBackendHandler: ITextLayoutBackendHandler
 	{
 		static Cairo.Context SharedContext;
+		
+		public double Heigth = -1;
 		
 		static TextLayoutBackendHandler ()
 		{
@@ -43,11 +47,13 @@ namespace Xwt.GtkBackend
 		
 		public object Create (Context context)
 		{
-			if (context != null) {
-				GtkContext c = (GtkContext) WidgetRegistry.GetBackend (context);
-				return Pango.CairoHelper.CreateLayout (c.Context);
-			} else
-				return Pango.CairoHelper.CreateLayout (SharedContext);
+			CairoContextBackend c = (CairoContextBackend) WidgetRegistry.GetBackend (context);
+			return Pango.CairoHelper.CreateLayout (c.Context);
+		}
+		
+		public object Create (ICanvasBackend canvas)
+		{
+			return Pango.CairoHelper.CreateLayout (SharedContext);
 		}
 
 		public void SetText (object backend, string text)
@@ -67,7 +73,24 @@ namespace Xwt.GtkBackend
 			Pango.Layout tl = (Pango.Layout)backend;
 			tl.Width = (int) (value * Pango.Scale.PangoScale);
 		}
-
+		
+		public void SetHeigth (object backend, double value)
+		{
+			Pango.Layout tl = (Pango.Layout)backend;
+			this.Heigth = value;
+			
+		}
+		
+		public void SetTrimming (object backend, TextTrimming textTrimming)
+		{
+			Pango.Layout tl = (Pango.Layout)backend;
+			if (textTrimming == TextTrimming.WordElipsis)
+				tl.Ellipsize = Pango.EllipsizeMode.End;
+			if (textTrimming == TextTrimming.Word)
+				tl.Ellipsize = Pango.EllipsizeMode.None;
+			
+		}
+		
 		public Size GetSize (object backend)
 		{
 			Pango.Layout tl = (Pango.Layout) backend;

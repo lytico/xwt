@@ -184,7 +184,15 @@ namespace Xwt.GtkBackend
 				
 				gtkCursors [cursor] = gc = new Gdk.Cursor (ctype);
 			}
-			EventsRootWidget.GdkWindow.Cursor = gc;
+			if (EventsRootWidget.GdkWindow == null) {
+				EventHandler h = null;
+				h = delegate {
+					EventsRootWidget.GdkWindow.Cursor = gc;
+					EventsRootWidget.Realized -= h;
+				};
+				EventsRootWidget.Realized += h;
+			} else
+				EventsRootWidget.GdkWindow.Cursor = gc;
 		}
 		
 		~WidgetBackend ()
@@ -220,10 +228,10 @@ namespace Xwt.GtkBackend
 		
 		public Point ConvertToScreenCoordinates (Point widgetCoordinates)
 		{
-			if (Widget.GdkWindow == null)
+			if (Widget.ParentWindow == null)
 				return Point.Zero;
 			int x, y;
-			Widget.GdkWindow.GetOrigin (out x, out y);
+			Widget.ParentWindow.GetOrigin (out x, out y);
 			var a = Widget.Allocation;
 			x += a.X;
 			y += a.Y;
@@ -232,53 +240,65 @@ namespace Xwt.GtkBackend
 		
 		public virtual WidgetSize GetPreferredWidth ()
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Width);
 				if (minSizeSet && Frontend.MinWidth != -1)
 					s.MinSize = Frontend.MinWidth;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
 		public virtual WidgetSize GetPreferredHeight ()
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Height);
 				if (minSizeSet && Frontend.MinHeight != -1)
 					s.MinSize = Frontend.MinHeight;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
 		public virtual WidgetSize GetPreferredHeightForWidth (double width)
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Height);
 				if (minSizeSet && Frontend.MinHeight != -1)
 					s.MinSize = Frontend.MinHeight;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
 		public virtual WidgetSize GetPreferredWidthForHeight (double height)
 		{
+			bool oldFlag = doubleSizeRequestCheckSupported;
 			try {
 				gettingPreferredSize = true;
+				doubleSizeRequestCheckSupported = false;
 				var s = new WidgetSize (Widget.SizeRequest ().Width);
 				if (minSizeSet && Frontend.MinWidth != -1)
 					s.MinSize = Frontend.MinWidth;
 				return s;
 			} finally {
 				gettingPreferredSize = false;
+				doubleSizeRequestCheckSupported = oldFlag;
 			}
 		}
 		
@@ -546,6 +566,11 @@ namespace Xwt.GtkBackend
 		int realRequestedWidth;
 		int realRequestedHeight;
 		bool gettingPreferredSize;
+		static bool doubleSizeRequestCheckSupported = true;
+		
+		public bool IsPreallocating {
+			get { return sizeCheckStep == SizeCheckStep.AdjustSize || sizeCheckStep == SizeCheckStep.PreAllocate; }
+		}
 
 		void HandleWidgetSizeRequested (object o, Gtk.SizeRequestedArgs args)
 		{
@@ -576,8 +601,15 @@ namespace Xwt.GtkBackend
 							req.Width = (int) w.MinSize;
 						}
 						if ((enabledEvents & WidgetEvent.PreferredHeightForWidthCheck) != 0) {
-							req.Height = 1;
-							sizeCheckStep = SizeCheckStep.PreAllocate;
+							if (doubleSizeRequestCheckSupported) {
+								req.Height = 1;
+								sizeCheckStep = SizeCheckStep.PreAllocate;
+								realRequestedWidth = req.Width; // Store the width, since it will be used in the next iteration
+							} else {
+								var h = eventSink.OnGetPreferredHeightForWidth (req.Width);
+								req.Height = (int) h.MinSize;
+								sizeCheckStep = SizeCheckStep.FinalAllocate;
+							}
 						}
 						else if ((enabledEvents & WidgetEvent.PreferredHeightCheck) != 0) {
 							var h = eventSink.OnGetPreferredHeight ();
@@ -590,8 +622,15 @@ namespace Xwt.GtkBackend
 							req.Height = (int) h.MinSize;
 						}
 						if ((enabledEvents & WidgetEvent.PreferredWidthForHeightCheck) != 0) {
-							req.Width = 1;
-							sizeCheckStep = SizeCheckStep.PreAllocate;
+							if (doubleSizeRequestCheckSupported) {
+								req.Width = 1;
+								sizeCheckStep = SizeCheckStep.PreAllocate;
+								realRequestedHeight = req.Height; // Store the height, since it will be used in the next iteration
+							} else {
+								var w = eventSink.OnGetPreferredWidthForHeight (req.Height);
+								req.Width = (int) w.MinSize;
+								sizeCheckStep = SizeCheckStep.FinalAllocate;
+							}
 						}
 						else if ((enabledEvents & WidgetEvent.PreferredWidthCheck) != 0) {
 						    var w = eventSink.OnGetPreferredWidth ();
@@ -613,19 +652,20 @@ namespace Xwt.GtkBackend
 			}
 			
 			Toolkit.Invoke (delegate {
-				if (sizeCheckStep == SizeCheckStep.SizeRequest) {
-					Console.WriteLine ("SizeRequest not called. Should not happen");
+				if (sizeCheckStep == SizeCheckStep.SizeRequest && (enabledEvents & sizeCheckEvents) != sizeCheckEvents) {
+					var ev = EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth ? WidgetEvent.PreferredWidthCheck | WidgetEvent.PreferredHeightForWidthCheck : WidgetEvent.PreferredHeightCheck | WidgetEvent.PreferredWidthForHeightCheck;
+					// If all size request methods are overriden, the widget's size request won't be called, so this status is correct
+					if ((enabledEvents & ev) != ev)
+						Console.WriteLine ("SizeRequest not called. Should not happen.");
 				}
 				else if (sizeCheckStep == SizeCheckStep.PreAllocate || sizeCheckStep == SizeCheckStep.AdjustSize) {
 					if (EventSink.GetSizeRequestMode () == SizeRequestMode.HeightForWidth) {
-						realRequestedWidth = args.Allocation.Width;
 						Toolkit.Invoke (delegate {
 							realRequestedHeight = (int) eventSink.OnGetPreferredHeightForWidth (args.Allocation.Width).MinSize;
 						});
 						sizeCheckStep = SizeCheckStep.AdjustSize;
 						Widget.QueueResize ();
 					} else {
-						realRequestedHeight = args.Allocation.Height;
 						Toolkit.Invoke (delegate {
 							realRequestedWidth = (int) eventSink.OnGetPreferredWidthForHeight (args.Allocation.Height).MinSize;
 						});
@@ -708,7 +748,8 @@ namespace Xwt.GtkBackend
 
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
-			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
+			var sc = ConvertToScreenCoordinates (new Point (0, 0));
+			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.XRoot - sc.X, args.Event.YRoot - sc.Y);
 			Toolkit.Invoke (delegate {
 				EventSink.OnMouseMoved (a);
 			});
@@ -725,6 +766,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
+		[GLib.ConnectBeforeAttribute]
 		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
