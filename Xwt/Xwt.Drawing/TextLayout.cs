@@ -287,7 +287,7 @@ namespace Xwt.Drawing
 		WordElipsis
 	}
 	
-	class TextLayoutData
+	public class TextLayoutData
 	{
 		public double Width = -1;
 		public double Height = -1;

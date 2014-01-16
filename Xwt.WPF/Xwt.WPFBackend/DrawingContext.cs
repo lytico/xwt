@@ -34,7 +34,7 @@ using SW = System.Windows;
 
 namespace Xwt.WPFBackend
 {
-	internal class DrawingContext:IDisposable
+	public class DrawingContext:IDisposable
 	{
 		Stack<ContextData> pushes = new Stack<ContextData> ();
 		TransformGroup transforms = new TransformGroup ();
