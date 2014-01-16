@@ -185,7 +185,6 @@ namespace Xwt.WPFBackend
 			FormattedText.SetFontWeight (f.Weight);
 		}
 
-		public DrawingContext Context;
 		public Font Font;
 	}
 }
