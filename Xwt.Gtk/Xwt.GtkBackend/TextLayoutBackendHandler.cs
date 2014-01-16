@@ -136,6 +136,10 @@ namespace Xwt.GtkBackend
 			};
 		}
 
+        public override object Create (Context context) {
+            throw new NotImplementedException();
+        }
+
 		public override void SetText (object backend, string text)
 		{
 			var tl = (PangoBackend) backend;
