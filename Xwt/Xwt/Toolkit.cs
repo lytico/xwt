@@ -60,6 +60,10 @@ namespace Xwt
 			get { return context; }
 		}
 
+        public static Toolkit Engine<T> () where T : ToolkitEngineBackend {
+            return toolkits[typeof(T)];
+        }
+        
 		internal ToolkitEngineBackend Backend {
 			get { return backend; }
 		}
@@ -169,6 +173,15 @@ namespace Xwt
 				throw new ArgumentException ("Invalid toolkit type");
 			}
 		}
+
+        public static Toolkit CreateToolkit<T> (bool isGuest) where T: ToolkitEngineBackend {
+            var t = typeof (T);
+            var result = new Toolkit();
+            result.backend = (ToolkitEngineBackend)Activator.CreateInstance(t);
+            result.Initialize(isGuest);
+            result.toolkitType = ToolkitType.Other;
+            return result;
+        }
 
 		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
 		{
