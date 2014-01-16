@@ -163,7 +163,9 @@ namespace Xwt.Drawing
 			if (Matrix.ReferenceEquals (matrix1, matrix2))
 				return true;
 			if (Matrix.ReferenceEquals (matrix1, null))
-				return false; 
+				return false;
+            if (Matrix.ReferenceEquals(matrix2, null))
+                return false; 
 			return matrix1.Equals (matrix2);
 		}
 
