@@ -386,9 +386,8 @@ namespace Xwt
 				throw new InvalidOperationException ("Object doesn't have a backend");
 		}
 
-		public T CreateFrontend<T> (object ob)
-		{
-			throw new NotImplementedException ();
+		public T CreateFrontend<T> (object ob) {
+		    return Backend.CreateFrontend<T>(ob);
 		}
 
 		public Image RenderWidget (Widget widget)
