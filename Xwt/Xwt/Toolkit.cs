@@ -214,6 +214,14 @@ namespace Xwt
 			KeyboardHandler = Backend.CreateBackend<KeyboardHandler> ();
 		}
 
+        public T CreateBackendHandler<T> () {
+            return Backend.CreateBackend<T>();
+        }
+
+        public void RegisterBackend<Backend, Implementation> () where Implementation: Backend {
+            this.Backend.RegisterBackend<Backend, Implementation>();
+        }
+
 		internal static ToolkitEngineBackend GetToolkitBackend (Type type)
 		{
 			Toolkit t;
