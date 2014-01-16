@@ -68,6 +68,12 @@ namespace Xwt.Drawing
 			Setup ();
 		}
 
+        public TextLayout (Context ctx) {
+            ToolkitEngine = ctx.ToolkitEngine;
+            handler = ToolkitEngine.TextLayoutBackendHandler;
+            Backend = handler.Create(ctx);
+        }
+
 		void Setup ()
 		{
 			if (handler.DisposeHandleOnUiThread)
