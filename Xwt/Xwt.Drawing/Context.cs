@@ -37,11 +37,11 @@ namespace Xwt.Drawing
 		double globalAlpha = 1;
 		Stack<double> alphaStack = new Stack<double> ();
 		
-		internal Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
+		public Context (object backend, Toolkit toolkit): this (backend, toolkit, toolkit.ContextBackendHandler)
 		{
 		}
 
-		internal Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base (backend, toolkit, handler)
+        public Context (object backend, Toolkit toolkit, ContextBackendHandler handler): base(backend, toolkit, handler)
 		{
 			this.handler = handler;
 		}
@@ -364,6 +364,7 @@ namespace Xwt.Drawing
 		internal double ScaleFactor {
 			get { return handler.GetScaleFactor (Backend); }
 		}
-	}
+
+    }
 }
 

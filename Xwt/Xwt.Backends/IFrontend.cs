@@ -28,7 +28,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	internal interface IFrontend
+	public interface IFrontend
 	{
 		object Backend { get; }
 		Toolkit ToolkitEngine { get; }

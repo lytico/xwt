@@ -45,7 +45,7 @@ using ImageFormat = Xwt.Drawing.ImageFormat;
 
 namespace Xwt.WPFBackend
 {
-	internal static class DataConverter
+	public static class DataConverter
 	{
 		//
 		// Rect/Point
