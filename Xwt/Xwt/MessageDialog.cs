@@ -184,7 +184,7 @@ namespace Xwt
 	
 	public class MessageDescription
 	{
-		internal MessageDescription ()
+        public MessageDescription ()
 		{
 			DefaultButton = -1;
 			Buttons = new List<Command> ();
