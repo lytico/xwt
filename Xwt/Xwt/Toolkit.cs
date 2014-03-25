@@ -233,10 +233,6 @@ namespace Xwt
             return Backend.CreateBackend<T>();
         }
 
-        public void RegisterBackend<Backend, Implementation> () where Implementation: Backend {
-            this.Backend.RegisterBackend<Backend, Implementation>();
-        }
-
 		internal static ToolkitEngineBackend GetToolkitBackend (Type type)
 		{
 			Toolkit t;
