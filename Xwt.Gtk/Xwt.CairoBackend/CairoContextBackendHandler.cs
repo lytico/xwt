@@ -282,18 +282,21 @@ namespace Xwt.CairoBackend
 			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);
+           
 			if (layout.Height <= 0) {
 				Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 			} else {
 				var lc = pl.LineCount;
 				var scale = Pango.Scale.PangoScale;
 				double h = 0;
+                var baseline = ctx.Context.FontExtents.Ascent /
+                     (ctx.Context.FontExtents.Ascent + ctx.Context.FontExtents.Descent);
 				for (int i=0; i<lc; i++) {
 					var line = pl.Lines [i];
 					var ext = new Pango.Rectangle ();
 					var extl = new Pango.Rectangle ();
 					line.GetExtents (ref ext, ref extl);
-					h += (extl.Height / scale);
+                    h += h == 0 ? (extl.Height / scale * baseline) : (extl.Height / scale);
 					if (h > layout.Height)
 						break;
 					ctx.Context.MoveTo (x, y + h);
@@ -362,12 +365,12 @@ namespace Xwt.CairoBackend
 
 		public override Matrix GetCTM (object backend)
 		{
-			var cb = (CairoContextBackend)backend;
+			var gc = (CairoContextBackend)backend;
 
-			Cairo.Matrix t = cb.Context.Matrix;
+			Cairo.Matrix t = gc.Context.Matrix;
 
 			// Adjust CTM OffsetX, OffsetY for ContextBackend Origin
-			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0-cb.Origin.X, t.Y0-cb.Origin.Y);
+			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0-gc.Origin.X, t.Y0-gc.Origin.Y);
 
 			return ctm;
 		}
