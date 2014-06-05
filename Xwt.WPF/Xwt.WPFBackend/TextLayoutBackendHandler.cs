@@ -43,6 +43,10 @@ namespace Xwt.WPFBackend
 			return new TextLayoutBackend ();
 		}
 
+        public override object Create (Context context) {
+            return Create();
+        }
+
 		public override void SetWidth (object backend, double value)
 		{
 			var t = (TextLayoutBackend)backend;
@@ -181,7 +185,6 @@ namespace Xwt.WPFBackend
 			FormattedText.SetFontWeight (f.Weight);
 		}
 
-		public DrawingContext Context;
 		public Font Font;
 	}
 }

@@ -43,7 +43,7 @@ namespace Xwt
 		protected XwtObject (object backend, Toolkit toolkit)
 		{
 			this.backend = backend;
-			ToolkitEngine = Toolkit.CurrentEngine;
+            ToolkitEngine = toolkit ?? Toolkit.CurrentEngine;
 		}
 
 		protected XwtObject ()
@@ -57,7 +57,12 @@ namespace Xwt
 
 		protected object Backend {
 			get {
-				LoadBackend ();
+                if (backend == null) {
+                    backend = OnCreateBackend ();
+                    if (backend == null)
+                        throw new InvalidOperationException ("No backend found for widget: " + GetType ());
+                    OnBackendCreated ();
+                }
 				return backend;
 			}
 			set {
@@ -69,16 +74,6 @@ namespace Xwt
 			get { return Backend; }
 		}
 
-		protected void LoadBackend ()
-		{
-			if (backend == null) {
-				backend = OnCreateBackend ();
-				if (backend == null)
-					throw new InvalidOperationException ("No backend found for widget: " + GetType ());
-				OnBackendCreated ();
-			}
-		}
-		
 		protected virtual void OnBackendCreated ()
 		{
 		}

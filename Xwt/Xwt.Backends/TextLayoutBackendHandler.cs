@@ -35,6 +35,8 @@ namespace Xwt.Backends
 	{
 		public abstract object Create ();
 
+        public abstract object Create (Context context);
+
 		public abstract void SetWidth (object backend, double value);
 		public abstract void SetHeight (object backend, double value);
 		public abstract void SetText (object backend, string text);

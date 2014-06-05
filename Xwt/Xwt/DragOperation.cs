@@ -95,13 +95,19 @@ namespace Xwt
 		
 		internal DragStartData GetStartData ()
 		{
-			if (image == null)
-				throw new InvalidOperationException ("The drag image must be set before starting the drag operation");
-			return new DragStartData (data, action, image.ToBitmap ().GetBackend (), hotX, hotY);
+            //if (image == null)
+            //    throw new InvalidOperationException("The drag image must be set before starting the drag operation");
+            object img = null;
+            if(image !=null)
+                img = image.ToBitmap().GetBackend();
+            return new DragStartData (data, action, img, hotX, hotY);
 		}
 		
 	}
-	
+
+    /// <summary>
+    /// A collection of data that has been transferred through drag & drop or the clipboard
+    /// </summary>
 	public interface ITransferData
 	{
 		string Text { get; }
@@ -111,6 +117,8 @@ namespace Xwt
 		object GetValue (TransferDataType type);
 		T GetValue<T> () where T:class;
 		bool HasType (TransferDataType type);
-	}
+
+	    IEnumerable<TransferDataType> DataTypes { get; }
+    }
 }
 

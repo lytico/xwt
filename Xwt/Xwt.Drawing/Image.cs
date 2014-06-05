@@ -45,13 +45,13 @@ namespace Xwt.Drawing
 		internal Image ()
 		{
 		}
-		
-		internal Image (object backend): base (backend)
+
+        public Image (object backend): base(backend)
 		{
 			Init ();
 		}
-		
-		internal Image (object backend, Toolkit toolkit): base (backend, toolkit)
+
+        public Image (object backend, Toolkit toolkit): base(backend, toolkit)
 		{
 			Init ();
 		}

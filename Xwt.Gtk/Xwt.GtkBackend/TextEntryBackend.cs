@@ -159,6 +159,7 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool MultiLine {
+            // GtkEntry has no multiline, so how to implement it? 
 			get; set;
 		}
 		

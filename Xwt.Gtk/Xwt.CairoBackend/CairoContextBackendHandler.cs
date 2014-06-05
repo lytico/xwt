@@ -282,6 +282,7 @@ namespace Xwt.CairoBackend
 			var pl = be.Layout;
 			CairoContextBackend ctx = (CairoContextBackend)backend;
 			ctx.Context.MoveTo (x, y);
+           
 			if (layout.Height <= 0) {
 				Pango.CairoHelper.ShowLayout (ctx.Context, pl);
 			} else {
@@ -364,12 +365,12 @@ namespace Xwt.CairoBackend
 
 		public override Matrix GetCTM (object backend)
 		{
-			var cb = (CairoContextBackend)backend;
+			var gc = (CairoContextBackend)backend;
 
-			Cairo.Matrix t = cb.Context.Matrix;
+			Cairo.Matrix t = gc.Context.Matrix;
 
 			// Adjust CTM OffsetX, OffsetY for ContextBackend Origin
-			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0-cb.Origin.X, t.Y0-cb.Origin.Y);
+			Matrix ctm = new Matrix (t.Xx, t.Yx, t.Xy, t.Yy, t.X0-gc.Origin.X, t.Y0-gc.Origin.Y);
 
 			return ctm;
 		}
