@@ -3,6 +3,7 @@
 //
 // Author:
 //       Lytico (http://www.limada.org)
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 http://www.limada.org
 //
@@ -26,7 +27,6 @@
 
 using System;
 using Xwt.Backends;
-using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -37,17 +37,12 @@ namespace Xwt.GtkBackend
 	public class TextEntryMultiLineBackend : WidgetBackend, ITextEntryBackend
 	{
 		string placeholderText;
-		Pango.Layout layout = null;
-		bool multiLine = false;
-		bool showFrame = true;
-		int frameMargin = 4;
+		Pango.Layout layout;
+		GtkMultilineTextEntry textView;
 
 		public string Text {
 			get { return TextView.Buffer.Text; }
-			set {
-				bufferSizeRequest = true;
-				TextView.Buffer.Text = value;
-			}
+			set { TextView.Buffer.Text = value; }
 		}
 
 		public Alignment TextAlignment {
@@ -64,62 +59,22 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool MultiLine {
-			get { return multiLine; }
-			set {
-				if (value != multiLine) {
-					multiLine = value;
-					if (!value) {
-						TextView.WrapMode = Gtk.WrapMode.None;
-					} else {
-						TextView.WrapMode = Gtk.WrapMode.Word;
-					}
-
-				}
-			}
+			get { return TextView.MultiLine; }
+			set { TextView.MultiLine = value; }
 		}
 
 		public bool ShowFrame {
-			get { return showFrame; }
+			get { return ((Gtk.Frame)Widget).ShadowType != Gtk.ShadowType.None; }
 			set {
-				showFrame = value;
-				frameMargin = value ? 4 : 0;
-				TextView.PixelsAboveLines = frameMargin;
-				TextView.PixelsBelowLines = frameMargin;
-				TextView.RightMargin = frameMargin;
-				TextView.LeftMargin = value ? frameMargin : 1;
-
+				if (value)
+					((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
+				else
+					((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.None;
 			}
 		}
 
-		protected virtual Gtk.TextView TextView {
-			get { return (Gtk.TextView)base.Widget; }
-		}
-
-		protected new Gtk.TextView Widget {
-			get { return TextView; }
-			set { base.Widget = value; }
-		}
-
-		protected virtual void RenderFrame (object o, Gtk.ExposeEventArgs args)
-		{
-
-			var w = TextView.GetWindow (Gtk.TextWindowType.Text);
-			if (ShowFrame && args.Event.Window == w) {
-				int wh, ww;
-				w.GetSize (out ww, out wh);
-
-				//Application.Invoke (() => {
-				using (var gc = new Gdk.GC (w)) {
-					w.DrawLines (gc, new Gdk.Point[] {
-						new Gdk.Point (0, 0),
-						new Gdk.Point (--ww, 0),
-						new Gdk.Point (ww, --wh),
-						new Gdk.Point (0, wh),
-						new Gdk.Point (0, 0),
-					});
-				}
-				//});
-			}
+		protected virtual GtkMultilineTextEntry TextView {
+			get { return textView; }
 		}
 
 		public string PlaceholderText {
@@ -127,9 +82,9 @@ namespace Xwt.GtkBackend
 			set {
 				if (placeholderText != value) {
 					if (placeholderText == null)
-						Widget.ExposeEvent += RenderPlaceholderText;
+						TextView.ExposeEvent += RenderPlaceholderText;
 					else if (value == null)
-						Widget.ExposeEvent -= RenderPlaceholderText;
+						TextView.ExposeEvent -= RenderPlaceholderText;
 				}
 				placeholderText = value;
 			}
@@ -141,85 +96,26 @@ namespace Xwt.GtkBackend
 
 		protected virtual void RenderPlaceholderText (object o, Gtk.ExposeEventArgs args)
 		{
-			var w = TextView.GetWindow (Gtk.TextWindowType.Text);
-			if (!string.IsNullOrEmpty (PlaceholderText) && string.IsNullOrEmpty (Text) && args.Event.Window == w) {
-				Util.RenderPlaceholderText (TextView, args, PlaceholderText, ref layout);
-			}
+			TextView.RenderPlaceholderText (args, PlaceholderText, ref layout);
 		}
 
 		public override object Font {
 			get { return base.Font; }
 			set {
 				base.Font = value;
-				xLayout = null;
+				TextView.ModifyFont ((Pango.FontDescription)value);
 				layout = null;
 			}
 		}
 
 		public override void Initialize ()
 		{
-			Widget = new Gtk.TextView ();
-			Widget.Show ();
-
+			textView = new GtkMultilineTextEntry ();
+			Widget = new Gtk.Frame ();
+			((Gtk.Frame)Widget).Add (textView);
 			ShowFrame = true;
-			TextView.ExposeEvent += RenderFrame;
-
-			InitializeMultiLine ();
-
+			Widget.ShowAll ();
 		}
-
-		#region Multiline-Handling
-
-		bool bufferSizeRequest = false;
-		int lineHeight = -1;
-		Pango.Layout xLayout = null;
-
-		protected Pango.Layout XLayout {
-			get { return xLayout ?? (xLayout = TextView.CreatePangoLayout ("X")); }
-		}
-
-		protected virtual void InitializeMultiLine ()
-		{
-			var w = 0;
-			var lastHeight = -1;
-
-			TextView.SizeRequested += (s, args) => {
-				if (!MultiLine)
-					args.Requisition = new Gtk.Requisition {
-						Width = -1,
-						Height = lineHeight
-					};
-			};
-
-			TextView.SizeAllocated += (s, e) => {
-				if (!MultiLine && lastHeight != e.Allocation.Height) {
-					lastHeight = e.Allocation.Height;
-					XLayout.GetPixelSize (out w, out lineHeight);
-					lineHeight += frameMargin * 2;
-					if (lastHeight > lineHeight)
-						TextView.PixelsAboveLines = (int)((lastHeight - lineHeight) / 2d);
-				}
-			};
-
-			TextView.Buffer.Changed += (s, e) => {
-				bufferSizeRequest = true;
-			};
-		}
-
-		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
-		{
-			if (MultiLine)
-				return base.GetPreferredSize (widthConstraint, heightConstraint);
-
-			if (bufferSizeRequest) {
-				bufferSizeRequest = !widthConstraint.IsConstrained;
-				return new Size (Widget.Allocation.Width, Widget.Allocation.Height);
-			}
-
-			return base.GetPreferredSize (widthConstraint, heightConstraint);
-		}
-
-		#endregion
 
 		#region Cursor and Selection
 
@@ -236,15 +132,12 @@ namespace Xwt.GtkBackend
 
 		public int SelectionStart {
 			get {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				TextView.Buffer.GetSelectionBounds (out start, out end);
 				return start.Offset;
-
 			}
 			set {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				TextView.Buffer.GetSelectionBounds (out start, out end);
 				var cacheLength = end.Offset - start.Offset;
 				start.Offset = value;
@@ -257,16 +150,14 @@ namespace Xwt.GtkBackend
 
 		public int SelectionLength {
 			get {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end))
 					return 0;
 				return end.Offset - start.Offset;
 
 			}
 			set {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end)) {
 					start = TextView.Buffer.GetIterAtMark (TextView.Buffer.InsertMark);
 					end = start;
@@ -280,17 +171,14 @@ namespace Xwt.GtkBackend
 
 		public string SelectedText {
 			get {
-				var start = new Gtk.TextIter ();
-				var end = start;
-
+				Gtk.TextIter start, end;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end))
-					return "";
+					return String.Empty;
 				return TextView.Buffer.GetText (start, end, true);
 			}
 			set {
-				var start = new Gtk.TextIter ();
-				var end = start;
-				var cachedOffset = 0;
+				Gtk.TextIter start, end;
+				int cachedOffset;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end)) {
 					start = TextView.Buffer.GetIterAtMark (TextView.Buffer.InsertMark);
 					cachedOffset = start.Offset;
@@ -321,19 +209,19 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is TextEntryEvent) {
 				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
-					TextView.Buffer.Changed += HandleChanged;
-					break;
-				case TextEntryEvent.Activated:
-					Widget.KeyPressEvent += HandleActivated;
-					break;
-				case TextEntryEvent.SelectionChanged:
-					enableSelectionChangedEvent = true;
-					Widget.MoveCursor += HandleMoveCursor;
-					Widget.ButtonPressEvent += HandleButtonPressEvent;
-					Widget.ButtonReleaseEvent += HandleButtonReleaseEvent;
-					Widget.MotionNotifyEvent += HandleMotionNotifyEvent;
-					break;
+					case TextEntryEvent.Changed:
+						TextView.Buffer.Changed += HandleChanged;
+						break;
+					case TextEntryEvent.Activated:
+						TextView.KeyPressEvent += HandleKeyPress;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						enableSelectionChangedEvent = true;
+						TextView.MoveCursor += HandleMoveCursor;
+						TextView.ButtonPressEvent += HandleButtonPressEvent;
+						TextView.ButtonReleaseEvent += HandleButtonReleaseEvent;
+						TextView.MotionNotifyEvent += HandleMotionNotifyEvent;
+						break;
 				}
 			}
 		}
@@ -343,19 +231,19 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is TextEntryEvent) {
 				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
-					TextView.Buffer.Changed -= HandleChanged;
-					break;
-				case TextEntryEvent.Activated:
-					Widget.KeyPressEvent -= HandleActivated;
-					break;
-				case TextEntryEvent.SelectionChanged:
-					enableSelectionChangedEvent = false;
-					Widget.MoveCursor -= HandleMoveCursor;
-					Widget.ButtonPressEvent -= HandleButtonPressEvent;
-					Widget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
-					Widget.MotionNotifyEvent -= HandleMotionNotifyEvent;
-					break;
+					case TextEntryEvent.Changed:
+						TextView.Buffer.Changed -= HandleChanged;
+						break;
+					case TextEntryEvent.Activated:
+						TextView.KeyPressEvent -= HandleKeyPress;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						enableSelectionChangedEvent = false;
+						TextView.MoveCursor -= HandleMoveCursor;
+						TextView.ButtonPressEvent -= HandleButtonPressEvent;
+						TextView.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+						TextView.MotionNotifyEvent -= HandleMotionNotifyEvent;
+						break;
 				}
 			}
 		}
@@ -368,9 +256,12 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		void HandleActivated (object sender, Gtk.KeyPressEventArgs e)
+		[GLib.ConnectBefore]
+		void HandleKeyPress (object sender, Gtk.KeyPressEventArgs e)
 		{
-			if (e.Event.Key == Gdk.Key.Return || e.Event.Key == Gdk.Key.ISO_Enter)
+			if ((e.Event.Key == Gdk.Key.Return ||
+			     e.Event.Key == Gdk.Key.ISO_Enter ||
+			     e.Event.Key == Gdk.Key.KP_Enter) && !MultiLine)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnActivated ();
 				});
@@ -429,15 +320,89 @@ namespace Xwt.GtkBackend
 		protected override void Dispose (bool disposing)
 		{
 			if (disposing) {
-				if (xLayout != null)
-					xLayout.Dispose ();
-				xLayout = null;
-
 				if (layout != null)
 					layout.Dispose ();
 				layout = null;
 			}
 			base.Dispose (disposing);
+		}
+	}
+
+	public class GtkMultilineTextEntry : Gtk.TextView
+	{
+		bool multiline;
+		int lastHeight = -1;
+		int lineHeight = -1;
+		Pango.Layout xLayout;
+
+		public bool MultiLine {
+			get {
+				return multiline;
+			}
+			set {
+				if (multiline != value) {
+					multiline = value;
+					if (!value) {
+						WrapMode = Gtk.WrapMode.None;
+						PixelsAboveLines = 3;
+						PixelsBelowLines = 3;
+					} else {
+						WrapMode = Gtk.WrapMode.Word;
+						PixelsAboveLines = 0;
+						PixelsBelowLines = 0;
+					}
+				}
+			}
+		}
+
+		public GtkMultilineTextEntry()
+		{
+			Indent = 3;
+			PixelsAboveLines = 3;
+			PixelsBelowLines = 3;
+			int w;
+			XLayout.GetPixelSize (out w, out lineHeight);
+			lineHeight += 6;
+		}
+
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			base.OnSizeRequested (ref requisition);
+			requisition.Width = 150; // mimic Gtk.Entry, which has a min width
+			if (!MultiLine)
+				requisition.Height = lineHeight;
+		}
+
+		protected Pango.Layout XLayout {
+			get { return xLayout ?? (xLayout = CreatePangoLayout ("X")); }
+		}
+
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			int width;
+			if (!MultiLine && lastHeight != allocation.Height) {
+				lastHeight = allocation.Height;
+				XLayout.GetPixelSize (out width, out lineHeight);
+				lineHeight += 6;
+			}
+			base.OnSizeAllocated (allocation);
+		}
+
+		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
+		{
+			if ((evnt.Key == Gdk.Key.Return ||
+			     evnt.Key == Gdk.Key.ISO_Enter ||
+			     evnt.Key == Gdk.Key.KP_Enter) && !MultiLine)
+				return true;
+			return base.OnKeyPressEvent (evnt);
+		}
+
+		public override void Dispose ()
+		{
+			if (xLayout != null)
+				xLayout.Dispose ();
+			xLayout = null;
+			base.Dispose ();
 		}
 	}
 }

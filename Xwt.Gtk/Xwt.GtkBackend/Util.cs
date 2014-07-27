@@ -272,9 +272,35 @@ namespace Xwt.GtkBackend
 			((IDisposable)cr).Dispose ();
 		}
 
-		public static void RenderPlaceholderText (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
+		public static void RenderPlaceholderText (this Gtk.Entry entry, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
 		{
+			// The Entry's GdkWindow is the top level window onto which
+			// the frame is drawn; the actual text entry is drawn into a
+			// separate window, so we can ensure that for themes that don't
+			// respect HasFrame, we never ever allow the base frame drawing
+			// to happen
+			if (args.Event.Window == entry.GdkWindow)
+				return;
 
+			if (entry.Text.Length > 0)
+				return;
+
+			RenderPlaceholderText_internal (entry, args, placeHolderText, ref layout);
+		}
+
+		public static void RenderPlaceholderText (this Gtk.TextView textView, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
+		{
+			if (args.Event.Window != textView.GetWindow (Gtk.TextWindowType.Text))
+				return;
+
+			if (textView.Buffer.Text.Length > 0)
+				return;
+
+			RenderPlaceholderText_internal (textView, args, placeHolderText, ref layout);
+		}
+
+		static void RenderPlaceholderText_internal (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
+		{
 			if (layout == null) {
 				layout = new Pango.Layout (widget.PangoContext);
 				layout.FontDescription = widget.PangoContext.FontDescription.Copy ();

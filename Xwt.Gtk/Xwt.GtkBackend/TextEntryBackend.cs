@@ -103,7 +103,7 @@ namespace Xwt.GtkBackend
 		
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
-			Util.RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
+			Widget.RenderPlaceholderText (args, placeHolderText, ref layout);
 		}
 
 		public bool ReadOnly {

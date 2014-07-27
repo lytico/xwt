@@ -40,6 +40,7 @@ namespace Samples
 			te1.Changed += delegate {
 				la.Text = "Text: " + te1.Text;
 			};
+			te1.Activated += (sender, e) => MessageDialog.ShowMessage ("Activated");
 
 			HBox selBox = new HBox ();
 
