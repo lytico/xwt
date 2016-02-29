@@ -323,8 +323,8 @@ namespace Xwt
 		protected WidgetBackendHost BackendHost {
 			get { return backendHost; }
 		}*/
-		
-		IWidgetBackend Backend {
+
+        protected IWidgetBackend Backend {
 			get { return (IWidgetBackend) BackendHost.Backend; }
 		}
 		
@@ -832,13 +832,13 @@ namespace Xwt
 				previewTextInput (this, args);
 		}
 		
-		internal protected virtual void OnGotFocus (EventArgs args)
+		protected virtual void OnGotFocus (EventArgs args)
 		{
 			if (gotFocus != null)
 				gotFocus (this, args);
 		}
 		
-		internal protected virtual void OnLostFocus (EventArgs args)
+		protected virtual void OnLostFocus (EventArgs args)
 		{
 			if (lostFocus != null)
 				lostFocus (this, args);
@@ -1305,9 +1305,11 @@ namespace Xwt
 				if (wback != null)
 					wback.InternalParent = this;
 			} else {
-				if (w.Parent != null)
-					throw new InvalidOperationException ("Widget is already a child of a widget of type " + w.Parent.GetType ());
-				w.Parent = this;
+			    var hasParent = w.Parent != null;
+			    if (hasParent) {
+                    throw new InvalidOperationException ("Widget is already a child of a widget of type " + w.Parent.GetType ());
+			    }
+			    w.Parent = this;
 				w.InternalParent = this;
 				if (wback != null) {
 					wback.Parent = this;

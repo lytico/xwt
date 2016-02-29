@@ -160,6 +160,17 @@ namespace Xwt.GtkBackend
 			return !img.HasMultipleSizes;
 		}
 
+        public override ImageFormat GetFormat (object handle) 
+        {
+            var img = (GtkImage)handle;
+            var pixbuf = img.MainFrame;
+            if (pixbuf.HasAlpha && pixbuf.BitsPerSample == 4)
+                return ImageFormat.ARGB32;
+            if (pixbuf.HasAlpha && pixbuf.BitsPerSample == 3)
+                return ImageFormat.RGB24;
+            return ImageFormat.Other;
+        }
+
 		public override object ConvertToBitmap (object handle, double width, double height, double scaleFactor, ImageFormat format)
 		{
 			var img = (GtkImage) handle;
@@ -187,9 +198,16 @@ namespace Xwt.GtkBackend
 			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
 				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
 
-			if (result == null) {
-				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+			if (result == null && stockId != Gtk.Stock.MissingImage) {
+				result = CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
 			}
+
+		    if (result == null) {
+		        var img = new GtkImage ((b, r) => {
+		            // TODO: draw a "missing" pic here
+		        });
+		        result = img.ToPixbuf (Toolkit.Engine<GtkEngine>().Backend.ApplicationContext, width, height);
+		    }
 			return result;
 		}
 	}
@@ -229,6 +247,12 @@ namespace Xwt.GtkBackend
 		public ImageFrame[] Frames {
 			get { return frames; }
 		}
+
+        public Gdk.Pixbuf MainFrame 
+        {
+            get { return frames[0].Pixbuf; }
+            set { frames[0] = new ImageFrame (value, true); }
+        }
 
 		public GtkImage (Gdk.Pixbuf img)
 		{

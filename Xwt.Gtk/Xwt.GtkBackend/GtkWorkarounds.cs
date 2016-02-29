@@ -1170,7 +1170,8 @@ namespace Xwt.GtkBackend
 				return 1;
 
 			try {
-				return gdk_screen_get_monitor_scale_factor (screen.Handle, monitor);
+				//return gdk_screen_get_monitor_scale_factor (screen.Handle, monitor);
+			    return (double) screen.Width / screen.WidthMm * 25.4d / 96d;
 			} catch (DllNotFoundException) {
 			} catch (EntryPointNotFoundException) {
 			}
@@ -1198,6 +1199,18 @@ namespace Xwt.GtkBackend
 			}
 			supportsHiResIcons = false;
 			return null;
+		}
+
+		public static void AddSignalHandler (this Gtk.Widget widget, string name, Delegate handler, Type args_type)
+		{
+			var signal = GLib.Signal.Lookup (widget, name, args_type);
+			signal.AddDelegate (handler);
+		}
+
+		public static void RemoveSignalHandler (this Gtk.Widget widget, string name, Delegate handler)
+		{
+			var signal = GLib.Signal.Lookup (widget, name);
+			signal.AddDelegate (handler);
 		}
 	}
 	

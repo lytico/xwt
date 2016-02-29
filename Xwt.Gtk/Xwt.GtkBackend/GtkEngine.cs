@@ -71,7 +71,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IComboBoxBackend, ComboBoxBackend> ();
 			RegisterBackend<IDesignerSurfaceBackend, DesignerSurfaceBackend> ();
 			RegisterBackend<IMenuButtonBackend, MenuButtonBackend> ();
-			RegisterBackend<ITextEntryBackend, TextEntryBackend> ();
+			RegisterBackend<ITextEntryBackend, TextEntryMultiLineBackend> ();
 			RegisterBackend<IToggleButtonBackend, ToggleButtonBackend> ();
 			RegisterBackend<IImageViewBackend, ImageViewBackend> ();
 			RegisterBackend<IAlertDialogBackend, AlertDialogBackend> ();
@@ -108,6 +108,7 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend<KeyboardHandler, GtkKeyboardHandler> ();
 			RegisterBackend<ISearchTextEntryBackend, SearchTextEntryBackend> ();
+			RegisterBackend<IWebViewBackend, WebViewBackend> ();
 
 			string typeName = null;
 			string asmName = null;

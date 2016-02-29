@@ -1,8 +1,9 @@
-﻿//
+//
 // WebViewBackend.cs
 //
 // Author:
 //       Cody Russell <cody@xamarin.com>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Xamarin Inc.
 //
@@ -30,7 +31,8 @@ using System.Runtime.InteropServices;
 using SWF = System.Windows.Forms;
 using Xwt.GtkBackend;
 using Xwt.Backends;
-using GTK = Gtk;
+using Gtk;
+using System.Diagnostics;
 
 namespace Xwt.Gtk.Windows
 {
@@ -38,7 +40,8 @@ namespace Xwt.Gtk.Windows
 	{
 		SWF.WebBrowser view;
 		string url;
-		GTK.Socket socket;
+		Socket socket;
+		bool enableNavigatingEvent, enableLoadingEvent, enableLoadedEvent, enableTitleChangedEvent;
 
 		[DllImportAttribute("user32.dll", EntryPoint = "SetParent")]
 		internal static extern System.IntPtr SetParent([InAttribute] System.IntPtr hwndChild, [InAttribute] System.IntPtr hwndNewParent);
@@ -47,33 +50,224 @@ namespace Xwt.Gtk.Windows
 		{
 			base.Initialize ();
 
-			socket = new GTK.Socket ();
+			socket = new Socket ();
 			Widget = socket;
 
-            this.Widget.Realized += delegate
-            {
-				var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
+			this.Widget.Realized += HandleGtkRealized;
+			this.Widget.SizeAllocated += HandleGtkSizeAllocated;
 
-				view = new SWF.WebBrowser ();
-				view.Size = size;
-				var browser_handle = view.Handle;
-				IntPtr window_handle = (IntPtr)socket.Id;
-				SetParent (browser_handle, window_handle);
-				if (url != null)
-					view.Navigate (url);
-
-				//return false;
-			};
             Widget.Show();
-        }
+		}
+
+		void HandleGtkRealized (object sender, EventArgs e)
+		{
+			var size = new System.Drawing.Size (Widget.WidthRequest, Widget.HeightRequest);
+            var createView = view == null;
+		    if (createView) {
+		        view = new SWF.WebBrowser ();
+		        view.ScriptErrorsSuppressed = true;
+		        view.AllowWebBrowserDrop = false;
+                view.Size = size;
+		    }
+		    
+			var browser_handle = view.Handle;
+			IntPtr window_handle = (IntPtr)socket.Id;
+			SetParent (browser_handle, window_handle);
+		    if (createView) {
+		        view.ProgressChanged += HandleProgressChanged;
+		        view.Navigating += HandleNavigating;
+		        view.Navigated += HandleNavigated;
+		        view.DocumentTitleChanged += HandleDocumentTitleChanged;
+
+                view.DocumentCompleted += (s, ev) => {
+                    var inFocus = false;
+                    view.Document.Focusing += (sD, eD) => {
+                        this.SetFocus ();
+                        inFocus = true;
+                        ApplicationContext.InvokeUserCode (delegate {
+                            EventSink.OnGotFocus();
+                        });
+                    };
+                    view.Document.LosingFocus += (sD, eD) => {
+                        ApplicationContext.InvokeUserCode (delegate {
+                            EventSink.OnLostFocus ();
+                        });
+                        inFocus = false;
+                    };
+                    view.Document.MouseDown += (sD, eD) => {
+                        var a = new ButtonEventArgs { X = eD.MousePosition.X, Y = eD.MousePosition.Y };
+                        ApplicationContext.InvokeUserCode (delegate {
+                            EventSink.OnButtonPressed (a);
+                        });
+                    };
+                };
+		        if (url != null)
+		            view.Navigate (url);
+		    } else {
+                view.Size = size;
+		        Widget.QueueResize ();
+		    }
+		}
+
+		void HandleGtkSizeAllocated (object sender, SizeAllocatedArgs e)
+		{
+			var size = new System.Drawing.Size(e.Allocation.Width, e.Allocation.Height);
+			view.Size = size;
+		}
 
 		public string Url {
-			get { return url; }
+			get {
+				if (view != null && !String.IsNullOrEmpty(view.Url.AbsoluteUri))
+					url = view.Url.AbsoluteUri;
+				return url;
+			}
 			set {
 				url = value;
 				if (view != null)
 					view.Navigate (url);
 			}
+		}
+
+		double loadProgress;
+		public double LoadProgress {
+			get {
+				return loadProgress;
+			}
+		}
+
+		public bool CanGoBack {
+			get {
+				return view.CanGoBack;
+			}
+		}
+
+		public bool CanGoForward {
+			get {
+				return view.CanGoForward;
+			}
+		}
+
+		public void GoBack ()
+		{
+			view.GoBack ();
+		}
+
+		public void GoForward ()
+		{
+			view.GoForward ();
+		}
+
+		public void Reload ()
+		{
+			view.Refresh ();
+		}
+
+		public void StopLoading ()
+		{
+			view.Stop ();
+		}
+
+		public void LoadHtml (string content, string base_uri)
+		{
+			view.DocumentText = content;
+		}
+
+		public string Title {
+			get {
+				return view.Document.Title;
+			}
+		}
+
+		protected new IWebViewEventSink EventSink {
+			get { return (IWebViewEventSink)base.EventSink; }
+		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is WebViewEvent) {
+				switch ((WebViewEvent)eventId) {
+				case WebViewEvent.NavigateToUrl:
+					enableNavigatingEvent = true;
+					break;
+				case WebViewEvent.Loading:
+					enableLoadingEvent = true;
+					break;
+				case WebViewEvent.Loaded:
+					enableLoadedEvent = true;
+					break;
+				case WebViewEvent.TitleChanged:
+					enableTitleChangedEvent = true;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is WebViewEvent) {
+				switch ((WebViewEvent)eventId) {
+				case WebViewEvent.NavigateToUrl:
+					enableNavigatingEvent = false;
+					break;
+				case WebViewEvent.Loading:
+					enableLoadingEvent = false;
+					break;
+				case WebViewEvent.Loaded:
+					enableLoadedEvent = false;
+					break;
+				case WebViewEvent.TitleChanged:
+					enableTitleChangedEvent = false;
+					break;
+				}
+			}
+		}
+
+		void HandleProgressChanged (object sender, SWF.WebBrowserProgressChangedEventArgs e)
+		{
+			if (e.CurrentProgress == -1) {
+				loadProgress = 1;
+				HandleLoaded(view, EventArgs.Empty);
+			}
+			else if (e.MaximumProgress == 0)
+				loadProgress = 1;
+			else
+				loadProgress = (double)e.CurrentProgress / (double)e.MaximumProgress;
+		}
+
+		void HandleNavigating (object sender, SWF.WebBrowserNavigatingEventArgs e)
+		{
+			if (enableNavigatingEvent) {
+				var url = e.Url.AbsoluteUri;
+				ApplicationContext.InvokeUserCode (delegate {
+					e.Cancel = EventSink.OnNavigateToUrl (url);
+				});
+			}
+		}
+
+		void HandleDocumentTitleChanged (object sender, EventArgs e)
+		{
+			if (enableTitleChangedEvent)
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnTitleChanged ();
+				});
+		}
+
+		void HandleNavigated (object sender, SWF.WebBrowserNavigatedEventArgs e)
+		{
+			if (enableLoadingEvent)
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnLoading ();
+				});
+		}
+
+		void HandleLoaded (object sender, EventArgs e)
+		{
+			if (enableLoadedEvent)
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnLoaded ();
+				});
 		}
 	}
 }

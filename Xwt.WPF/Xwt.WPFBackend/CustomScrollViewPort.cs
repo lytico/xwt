@@ -117,11 +117,13 @@ namespace Xwt.WPFBackend
 			SetVerticalOffset (VerticalOffset - VerticalStepIncrement);
 		}
 
+        public bool ScrollIntoView { get; set; }
 		public Rect MakeVisible (Visual visual, Rect rectangle)
 		{
 			// This is the area which is currently visible
 			var visibleRect = new Rect (HorizontalOffset, VerticalOffset, ViewportWidth, ViewportHeight);
-
+		    if(!ScrollIntoView)
+                return visibleRect;
 			// This is the area we wish to be visible
 			rectangle = visual.TransformToAncestor (this).TransformBounds (rectangle);
 
@@ -302,9 +304,12 @@ namespace Xwt.WPFBackend
 			get { return (this.horizontalBackend != null) ? this.horizontalBackend.StepIncrement : HorizontalPageIncrement / 10; }
 		}
 
-		protected override WSize MeasureOverride (WSize constraint)
-		{
-			FrameworkElement child = (FrameworkElement) InternalChildren [0];
+		protected override WSize MeasureOverride (WSize constraint) {
+
+            if (InternalChildren.Count == 0)
+                return base.MeasureOverride (constraint);
+
+            FrameworkElement child = (FrameworkElement) InternalChildren [0];
 
 			if (usingCustomScrolling) {
 				// Measure the child using the constraint because when using custom scrolling,
@@ -324,7 +329,10 @@ namespace Xwt.WPFBackend
 
 		protected override System.Windows.Size ArrangeOverride (System.Windows.Size finalSize)
 		{
-			FrameworkElement child = (FrameworkElement)InternalChildren [0];
+            if (InternalChildren.Count == 0)
+                return base.ArrangeOverride (finalSize);
+
+            FrameworkElement child = (FrameworkElement)InternalChildren [0];
 
 			WSize childSize = child.DesiredSize;
 

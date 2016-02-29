@@ -87,24 +87,28 @@ namespace Xwt.Drawing
 
 			int i = name.LastIndexOf (' ');
 			int lasti = name.Length;
+
 			do {
 				string token = name.Substring (i + 1, lasti - i - 1);
+
 				FontStyle st;
 				FontWeight fw;
 				FontStretch fs;
 				double siz;
-				if (double.TryParse (token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
-					size = siz;
-				else if (Enum.TryParse<FontStyle> (token, true, out st) && st != FontStyle.Normal)
-					style = st;
-				else if (Enum.TryParse<FontWeight> (token, true, out fw) && fw != FontWeight.Normal)
-					weight = fw;
-				else if (Enum.TryParse<FontStretch> (token, true, out fs) && fs != FontStretch.Normal)
-					stretch = fs;
-				else if (token.Length > 0)
-					break;
+			    if (token != "Normal") {
+			        if (double.TryParse (token, NumberStyles.Any, CultureInfo.InvariantCulture, out siz)) // Try parsing the number first, since Enum.TryParse can also parse numbers
+			            size = siz;
+			        else if (Enum.TryParse<FontStyle> (token, true, out st) && st != FontStyle.Normal)
+			            style = st;
+			        else if (Enum.TryParse<FontWeight> (token, true, out fw) && fw != FontWeight.Normal)
+			            weight = fw;
+			        else if (Enum.TryParse<FontStretch> (token, true, out fs) && fs != FontStretch.Normal)
+			            stretch = fs;
+			        else if (token.Length > 0)
+			            break;
+			    }
 
-				lasti = i;
+			    lasti = i;
 				if (i <= 0)
 					break;
 
