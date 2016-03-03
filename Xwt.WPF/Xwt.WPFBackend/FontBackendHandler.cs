@@ -140,8 +140,8 @@ namespace Xwt.WPFBackend
 			var font = (FontData)handle;
 			font = font.Clone ();
 			// FontData.Size should always be in Points
-			// no need for translation here
-		    	font.Size = size; // GetPointsFromDeviceUnits(size);
+			// no need for translation here?
+		    font.Size = size; // GetPointsFromDeviceUnits(size);
 			return font;
 		}
 

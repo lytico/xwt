@@ -196,11 +196,27 @@ namespace Xwt.GtkBackend
 						result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize2x, null, null);
 				}
 			}
-			
-			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
-				result = Gtk.IconTheme.Default.LoadIcon (stockId, (int)width, (Gtk.IconLookupFlags)0);
 
-			if (result == null) {
+            //if (result == null && Gtk.IconTheme.Default.HasIcon(stockId))
+            //{
+            //    try {
+            //        result = Gtk.IconTheme.Default.LoadIcon(stockId, (int)width, (Gtk.IconLookupFlags)0);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        result = null;
+            //    }
+            //}
+
+            if (result == null)
+            {
+                var img = new GtkImage((b, r, e, f) => {
+                    // TODO: draw a "missing" pic here
+                });
+                result = img.ToPixbuf(Toolkit.CurrentEngine.Backend.ApplicationContext, width, height);
+            }
+
+            if (result == null) {
 //				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
 				int w = (int) width;
 				int h = (int) height;

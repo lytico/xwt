@@ -309,11 +309,11 @@ namespace Xwt.WPFBackend
 		{
 			needsRebuild = false;
 			var dir = System.Windows.FlowDirection.LeftToRight;
-            var maxLines = formattedText == null ? formattedText.MaxLineCount - 1; ;
-			formattedText = new System.Windows.Media.FormattedText(text, System.Globalization.CultureInfo.CurrentCulture, dir, defaultFont, 36, brush);
-			if (width > 0)
-				formattedText.MaxTextWidth = width;
-			if (height > 0)
+            var maxLines = formattedText != null ? formattedText.MaxLineCount : -1;
+            formattedText = new System.Windows.Media.FormattedText(text, System.Globalization.CultureInfo.CurrentCulture, dir, defaultFont, 36, brush);
+            if (width > 0)
+                formattedText.MaxTextWidth = width;
+            if (height > 0)
 				formattedText.MaxTextHeight = height;
 			if (Font != null)
 				ApplyFont();
