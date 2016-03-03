@@ -38,19 +38,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public string PlaceholderText {
-			get { return placeHolderText; }
-			set {
-				if (placeHolderText != value) {
-					if (placeHolderText == null)
-						Widget.ExposeEvent += HandleWidgetExposeEvent;
-					else if (value == null)
-						Widget.ExposeEvent -= HandleWidgetExposeEvent;
-				}
-				placeHolderText = value;
-			}
-		}
-
 		public override Color BackgroundColor {
 			get {
 				return base.BackgroundColor;
@@ -61,12 +48,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		Pango.Layout layout;
-
-		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			Util.RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
-		}
 
 		public override void EnableEvent (object eventId)
 		{
@@ -104,16 +85,6 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				var l = layout;
-				if (l != null) {
-					l.Dispose ();
-					layout = null;
-				}
-			}
-			base.Dispose (disposing);
-		}
+
 	}
 }

@@ -32,8 +32,7 @@ namespace Xwt.GtkBackend
 {
 	public partial class TextEntryBackend : WidgetBackend, ITextEntryBackend
 	{
-		string placeHolderText;
-		
+	
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Entry ();
@@ -76,19 +75,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		public string PlaceholderText {
-			get { return placeHolderText; }
-			set {
-				if (placeHolderText != value) {
-					if (placeHolderText == null)
-						Widget.ExposeEvent += HandleWidgetExposeEvent;
-					else if (value == null)
-						Widget.ExposeEvent -= HandleWidgetExposeEvent;
-				}
-				placeHolderText = value;
-			}
-		}
-		
 		public override Color BackgroundColor {
 			get {
 				return base.BackgroundColor;
@@ -99,12 +85,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		Pango.Layout layout;
-		
-		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			RenderPlaceholderText (Widget, args, placeHolderText, ref layout);
-		}
 
 		internal static void RenderPlaceholderText (Gtk.Entry entry, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
 		{
@@ -379,17 +359,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				var l = layout;
-				if (l != null) {
-					l.Dispose ();
-					layout = null;
-				}
-			}
-			base.Dispose (disposing);
-		}
 	}
 }
 

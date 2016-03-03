@@ -18,7 +18,7 @@ namespace Xwt.WPFBackend
 		}
 
 		System.Windows.FrameworkElement NativeWidget () {
-		    var port = this.Content as SWC.Panel;
+		    var port = this.Content as System.Windows.Controls.Panel;
 		    if (port != null && port.Children.Count == 1)
 		        return port.Children[0] as System.Windows.FrameworkElement;
 		    return null;

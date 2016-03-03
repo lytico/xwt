@@ -51,11 +51,13 @@ namespace Xwt.WPFBackend
 		public virtual event PropertyChangedEventHandler PropertyChanged;
 
 		public object this[int index] {
-			get { return this.values [index]; }
+			get {
+                if (index >= values.Length)
+                    return default(object);
+                return this.values [index];
+            }
 			set
-			{
-				if (index >= values.Length)
-				    return null;				
+			{					
 				this.values [index] = value;
 				OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 			}

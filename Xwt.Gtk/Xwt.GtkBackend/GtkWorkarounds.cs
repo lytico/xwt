@@ -1296,18 +1296,7 @@ namespace Xwt.GtkBackend
 			if (bindingSet != IntPtr.Zero)
 				gtk_binding_entry_remove (bindingSet, (uint)key, modifiers);
 		}
-
-		public static void AddSignalHandler (this Gtk.Widget widget, string name, Delegate handler, Type args_type)
-		{
-			var signal = GLib.Signal.Lookup (widget, name, args_type);
-			signal.AddDelegate (handler);
-		}
-
-		public static void RemoveSignalHandler (this Gtk.Widget widget, string name, Delegate handler)
-		{
-			var signal = GLib.Signal.Lookup (widget, name);
-			signal.AddDelegate (handler);
-		}
+        
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>

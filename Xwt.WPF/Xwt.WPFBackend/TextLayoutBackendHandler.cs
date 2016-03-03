@@ -309,7 +309,7 @@ namespace Xwt.WPFBackend
 		{
 			needsRebuild = false;
 			var dir = System.Windows.FlowDirection.LeftToRight;
-			var maxLines = formattedText.MaxLineCount;
+            var maxLines = formattedText == null ? formattedText.MaxLineCount - 1; ;
 			formattedText = new System.Windows.Media.FormattedText(text, System.Globalization.CultureInfo.CurrentCulture, dir, defaultFont, 36, brush);
 			if (width > 0)
 				formattedText.MaxTextWidth = width;
@@ -319,7 +319,8 @@ namespace Xwt.WPFBackend
 				ApplyFont();
 			if (textTrimming != null)
 				ApplyTrimming();
-			formattedText.MaxLineCount = maxLines;
+            if (maxLines >= 0)
+                formattedText.MaxLineCount = maxLines;
 			if (attributes != null)
 				foreach (var at in attributes)
 					ApplyAttribute(at);
