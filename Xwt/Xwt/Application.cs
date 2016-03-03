@@ -69,7 +69,7 @@ namespace Xwt
 		{
 			if (engine != null)
 				return;
-			Initialize (null);
+			Initialize (default(string));
 		}
 		
 		/// <summary>
@@ -88,17 +88,26 @@ namespace Xwt
 		/// <param name="backendType">The <see cref="Type.FullName"/> of the backend type.</param>
 		public static void Initialize (string backendType)
 		{			
+			if (backendType == null)
+				throw new ArgumentNullException ("backendType");
 			if (engine != null)
 				return;
 
 			toolkit = Toolkit.Load (backendType, false);
 			toolkit.SetActive ();
-			engine = toolkit.Backend;
-			mainLoop = new UILoop (toolkit);
+			Initialize(toolkit);
+		}
+
+		public static void Initialize (Toolkit tk)
+		{
+			if (toolkit == null)
+				toolkit = tk;
+			engine = tk.Backend;
+			mainLoop = new UILoop (tk);
 
 			UIThread = System.Threading.Thread.CurrentThread;
 
-			toolkit.EnterUserCode ();
+			tk.EnterUserCode ();
 		}
 		
 		/// <summary>
@@ -334,6 +343,7 @@ namespace Xwt
 
 	public enum ToolkitType
 	{
+		Other = 0,		
 		Gtk = 1,
 		Cocoa = 2,
 		Wpf = 3,

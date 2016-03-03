@@ -477,9 +477,13 @@ namespace Xwt.GtkBackend
 					EventsRootWidget.DragBegin += HandleWidgetDragBegin;
 					break;
 				case WidgetEvent.KeyPressed:
+					AllocEventBox();
+					EventsRootWidget.AddEvents((int)Gdk.EventMask.KeyPressMask);
 					Widget.KeyPressEvent += HandleKeyPressEvent;
 					break;
 				case WidgetEvent.KeyReleased:
+                    			AllocEventBox();
+                    			EventsRootWidget.AddEvents((int)Gdk.EventMask.KeyReleaseMask);
 					Widget.KeyReleaseEvent += HandleKeyReleaseEvent;
 					break;
 				case WidgetEvent.GotFocus:
@@ -635,7 +639,7 @@ namespace Xwt.GtkBackend
 		}
 
 		Gdk.Rectangle lastAllocation;
-		void HandleWidgetBoundsChanged (object o, Gtk.SizeAllocatedArgs args)
+		protected void HandleWidgetBoundsChanged (object o, Gtk.SizeAllocatedArgs args)
 		{
 			if (Widget.Allocation != lastAllocation) {
 				lastAllocation = Widget.Allocation;
@@ -647,7 +651,7 @@ namespace Xwt.GtkBackend
 
 
 		[GLib.ConnectBefore]
-		void HandleKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
+		protected void HandleKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
 		{
 			KeyEventArgs kargs = GetKeyReleaseEventArgs (args);
 			if (kargs == null)
@@ -674,7 +678,7 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.ConnectBefore]
-		void HandleKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
+		protected void HandleKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
 		{
 			KeyEventArgs kargs = GetKeyPressEventArgs (args);
 			if (kargs == null)
@@ -771,14 +775,14 @@ namespace Xwt.GtkBackend
 		}
         
 
-		void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
+		protected void HandleWidgetFocusOutEvent (object o, Gtk.FocusOutEventArgs args)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnLostFocus ();
 			});
 		}
 
-		void HandleWidgetFocusInEvent (object o, EventArgs args)
+		protected void HandleWidgetFocusInEvent (object o, EventArgs args)
 		{
 			if (!CanGetFocus)
 				return;
@@ -787,7 +791,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
+		protected void HandleLeaveNotifyEvent (object o, Gtk.LeaveNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;
@@ -796,7 +800,7 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		void HandleEnterNotifyEvent (object o, Gtk.EnterNotifyEventArgs args)
+		protected void HandleEnterNotifyEvent (object o, Gtk.EnterNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;
@@ -825,7 +829,7 @@ namespace Xwt.GtkBackend
 			return new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 		}
 
-		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
+		protected void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = GetButtonReleaseEventArgs (args);
 			if (a == null)
@@ -850,7 +854,7 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.ConnectBeforeAttribute]
-		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
+		protected void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			var a = GetButtonPressEventArgs (args);
 			if (a == null)
@@ -881,7 +885,7 @@ namespace Xwt.GtkBackend
 		}
 		
 		[GLib.ConnectBefore]
-		void HandleWidgetDragMotion (object o, Gtk.DragMotionArgs args)
+		protected void HandleWidgetDragMotion (object o, Gtk.DragMotionArgs args)
 		{
 			args.RetVal = DoDragMotion (args.Context, args.X, args.Y, args.Time);
 		}
@@ -932,7 +936,7 @@ namespace Xwt.GtkBackend
 		}
 		
 		[GLib.ConnectBefore]
-		void HandleWidgetDragDrop (object o, Gtk.DragDropArgs args)
+		protected void HandleWidgetDragDrop (object o, Gtk.DragDropArgs args)
 		{
 			args.RetVal = DoDragDrop (args.Context, args.X, args.Y, args.Time);
 		}
@@ -973,14 +977,14 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		void HandleWidgetDragLeave (object o, Gtk.DragLeaveArgs args)
+		protected void HandleWidgetDragLeave (object o, Gtk.DragLeaveArgs args)
 		{
 			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnDragLeave (EventArgs.Empty);
 			});
 		}
 		
-		void QueryDragData (Gdk.DragContext ctx, uint time, bool isMotionEvent)
+		protected void QueryDragData (Gdk.DragContext ctx, uint time, bool isMotionEvent)
 		{
 			DragDropInfo.DragDataForMotion = isMotionEvent;
 			DragDropInfo.DragData = new TransferDataStore ();
@@ -991,7 +995,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 		
-		void HandleWidgetDragDataReceived (object o, Gtk.DragDataReceivedArgs args)
+		protected void HandleWidgetDragDataReceived (object o, Gtk.DragDataReceivedArgs args)
 		{
 			args.RetVal = DoDragDataReceived (args.Context, args.X, args.Y, args.SelectionData, args.Info, args.Time);
 		}
@@ -1010,9 +1014,10 @@ namespace Xwt.GtkBackend
 			// If multiple drag/drop data types are supported, we need to iterate through them all and
 			// append the data. If one of the supported data types is not found, there's no need to
 			// bail out. We must raise the event
-			Util.GetSelectionData (ApplicationContext, selectionData, DragDropInfo.DragData);
-
-			if (DragDropInfo.DragDataRequests == 0) {
+	    		if (!Util.GetSelectionData (ApplicationContext, selectionData, DragDropInfo.DragData) && DragDropInfo.DragDataRequests > 0) {
+				return false;
+			}
+			if (DragDropInfo.DragDataRequests == 0 && DragDropInfo.DragData.DataTypes.Any ()) {
 				if (DragDropInfo.DragDataForMotion) {
 					// If no specific action is set, it means that no key has been pressed.
 					// In that case, use Move or Copy or Link as default (when allowed, in this order).
@@ -1054,7 +1059,7 @@ namespace Xwt.GtkBackend
 			Gdk.Drag.Status (context, action, time);
 		}
 		
-		void HandleWidgetDragBegin (object o, Gtk.DragBeginArgs args)
+		protected void HandleWidgetDragBegin (object o, Gtk.DragBeginArgs args)
 		{
 			// If SetDragSource has not been called, ignore the event
 			if (DragDropInfo.SourceDragAction == default (Gdk.DragAction))
@@ -1130,7 +1135,7 @@ namespace Xwt.GtkBackend
 
 		void HandleDragFailed (object o, Gtk.DragFailedArgs args)
 		{
-			Console.WriteLine ("FAILED");
+			Console.WriteLine ("HandleDragFailed");
 		}
 		
 		void HandleDragDataDelete (object o, Gtk.DragDataDeleteArgs args)

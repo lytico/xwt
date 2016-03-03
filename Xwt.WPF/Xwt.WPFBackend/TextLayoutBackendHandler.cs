@@ -44,6 +44,10 @@ namespace Xwt.WPFBackend
 			return new TextLayoutBackend ();
 		}
 
+		public override object Create (Context context) {
+		    return Create();
+		}
+
 		public override void SetWidth (object backend, double value)
 		{
 			var t = (TextLayoutBackend)backend;
@@ -71,7 +75,27 @@ namespace Xwt.WPFBackend
 		public override void SetTrimming (object backend, Xwt.Drawing.TextTrimming textTrimming)
 		{
 			var t = (TextLayoutBackend)backend;
-			t.SetTrimming(textTrimming);
+			switch (textTrimming) {
+				case Xwt.Drawing.TextTrimming.WordElipsis:
+					t.FormattedText.Trimming = System.Windows.TextTrimming.WordEllipsis;
+					break;
+				default:
+					t.FormattedText.Trimming = System.Windows.TextTrimming.None;
+					break;
+			}
+		}
+
+		public override void SetWrapMode (object backend, Xwt.WrapMode wrapMode) 
+		{
+		    var t = (TextLayoutBackend)backend;
+		    switch (wrapMode) {
+		        case Xwt.WrapMode.None:
+		            t.FormattedText.MaxLineCount = 1;
+		            break;
+		        default:
+		            t.FormattedText.MaxLineCount = int.MaxValue;
+		            break;
+		    }
 		}
 
 		public override Size GetSize (object backend)
@@ -285,6 +309,7 @@ namespace Xwt.WPFBackend
 		{
 			needsRebuild = false;
 			var dir = System.Windows.FlowDirection.LeftToRight;
+			var maxLines = formattedText.MaxLineCount;
 			formattedText = new System.Windows.Media.FormattedText(text, System.Globalization.CultureInfo.CurrentCulture, dir, defaultFont, 36, brush);
 			if (width > 0)
 				formattedText.MaxTextWidth = width;
@@ -294,7 +319,7 @@ namespace Xwt.WPFBackend
 				ApplyFont();
 			if (textTrimming != null)
 				ApplyTrimming();
-
+			formattedText.MaxLineCount = maxLines;
 			if (attributes != null)
 				foreach (var at in attributes)
 					ApplyAttribute(at);

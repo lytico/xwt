@@ -361,7 +361,7 @@ namespace Xwt
 		/// Gets the backend.
 		/// </summary>
 		/// <value>The backend.</value>
-		IWidgetBackend Backend {
+		protected IWidgetBackend Backend {
 			get { return (IWidgetBackend) BackendHost.Backend; }
 		}
 		
@@ -840,7 +840,7 @@ namespace Xwt
 		/// Starts a drag operation with the specified drag start arguments.
 		/// </summary>
 		/// <param name="sdata">The drag start arguments to start the drag with.</param>
-		internal void DragStart (DragStartData sdata)
+		public void DragStart (DragStartData sdata)
 		{
 			Backend.DragStart (sdata);
 		}

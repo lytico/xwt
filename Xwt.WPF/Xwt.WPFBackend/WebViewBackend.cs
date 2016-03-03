@@ -90,7 +90,8 @@ namespace Xwt.WPFBackend
 
 		public void StopLoading ()
 		{
-			view.InvokeScript ("eval", "document.execCommand('Stop');");
+		    if (view.Document != null)
+		        view.InvokeScript ("eval", "document.execCommand('Stop');");
 		}
 
 		public void LoadHtml (string content, string base_uri)

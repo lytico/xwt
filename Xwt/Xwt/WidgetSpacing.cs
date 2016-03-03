@@ -63,25 +63,25 @@ namespace Xwt
 		/// Gets the space on the left side of a widget.
 		/// </summary>
 		/// <value>The spance on the left side.</value>
-		public double Left { get; internal set; }
+		public double Left { get; set; }
 
 		/// <summary>
 		/// Gets the space on the bottom side of a widget.
 		/// </summary>
 		/// <value>The spance on the bottom side.</value>
-		public double Bottom { get; internal set; }
+		public double Bottom { get; set; }
 	
 		/// <summary>
 		/// Gets the space on the right side of a widget.
 		/// </summary>
 		/// <value>The spance on the right side.</value>
-		public double Right { get; internal set; }
+		public double Right { get; set; }
 	
 		/// <summary>
 		/// Gets the space on the top side of a widget.
 		/// </summary>
 		/// <value>The spance on the top side.</value>
-		public double Top { get; internal set; }
+		public double Top { get; set; }
 
 		/// <summary>
 		/// Gets the horizontal spacing (left + right) of a widget.

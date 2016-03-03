@@ -47,12 +47,12 @@ namespace Xwt.Drawing
 		{
 		}
 		
-		internal Image (object backend): base (backend)
+		public Image (object backend): base (backend)
 		{
 			Init ();
 		}
 		
-		internal Image (object backend, Toolkit toolkit): base (backend, toolkit)
+		public Image (object backend, Toolkit toolkit): base (backend, toolkit)
 		{
 			Init ();
 		}
@@ -419,7 +419,7 @@ namespace Xwt.Drawing
 			get {
 				return !requestedSize.IsZero ? requestedSize : GetDefaultSize ();
 			}
-			internal set {
+			protected set {
 				requestedSize = value;
 			}
 		}

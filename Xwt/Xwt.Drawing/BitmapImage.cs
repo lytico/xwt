@@ -121,6 +121,10 @@ namespace Xwt.Drawing
 		public double PixelHeight {
 			get { return pixelSize.Height; }
 		}
+
+		public ImageFormat Format {
+		    get { return ToolkitEngine.ImageBackendHandler.GetFormat(Backend); }
+		}
 	}
 }
 

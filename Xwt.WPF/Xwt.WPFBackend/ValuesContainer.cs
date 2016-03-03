@@ -54,6 +54,8 @@ namespace Xwt.WPFBackend
 			get { return this.values [index]; }
 			set
 			{
+				if (index >= values.Length)
+				    return null;				
 				this.values [index] = value;
 				OnPropertyChanged (new PropertyChangedEventArgs ("Item[]"));
 			}
