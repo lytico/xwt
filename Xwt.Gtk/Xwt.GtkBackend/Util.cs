@@ -274,6 +274,7 @@ namespace Xwt.GtkBackend
 			((IDisposable)cr).Dispose ();
 		}
 
+		#if !XWT_GTK3
 		public static void RenderPlaceholderText (Gtk.Widget widget, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout) {
 
 		    if (layout == null) {
@@ -296,7 +297,7 @@ namespace Xwt.GtkBackend
 		        args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2, layout);
 		    }
 		}
-	
+		#endif
     }
 }
 
