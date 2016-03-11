@@ -122,7 +122,7 @@ namespace Xwt.Drawing
 		internal static Font FromName (string name, Toolkit toolkit)
 		{
 			if (string.IsNullOrWhiteSpace (name))
-				throw new ArgumentNullException (nameof (name), "Font name cannot be null or empty");
+				throw new ArgumentNullException (/*nameof (name)*/"name", "Font name cannot be null or empty");
 			var handler = toolkit.FontBackendHandler;
 
 			double size = -1;
