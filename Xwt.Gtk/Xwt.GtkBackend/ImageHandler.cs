@@ -218,6 +218,7 @@ namespace Xwt.GtkBackend
 
             if (result == null) {
 //				return CreateBitmap (Gtk.Stock.MissingImage, width, height, scaleFactor);
+				#if !XWT_GTK3
 				int w = (int) width;
 				int h = (int) height;
 				Gdk.Pixmap pmap = new Gdk.Pixmap (Gdk.Screen.Default.RootWindow, w, h);
@@ -231,6 +232,7 @@ namespace Xwt.GtkBackend
 				pmap.DrawLine (gc, (w / 4), (h / 4), ((w - 1) - (w / 4)), ((h - 1) - (h / 4)));
 				pmap.DrawLine (gc, ((w - 1) - (w / 4)), (h / 4), (w / 4), ((h - 1) - (h / 4)));
 				return Gdk.Pixbuf.FromDrawable (pmap, pmap.Colormap, 0, 0, 0, 0, w, h);
+				#endif
 			}
 			return result;
 		}
