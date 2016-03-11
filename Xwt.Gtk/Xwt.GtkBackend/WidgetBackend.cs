@@ -1,4 +1,4 @@
-// 
+﻿// 
 // WidgetBackend.cs
 //  
 // Author:
@@ -223,14 +223,40 @@ namespace Xwt.GtkBackend
 
 			gdkCursor = gc;
 
+			#if limada_8b3c8a
+			if (EventsRootWidget.GdkWindow == null)
+				SubscribeRealizedEvent ();
+			else
+				EventsRootWidget.GdkWindow.Cursor = gc;
+			#else
 			// subscribe mouse entered/leaved events, when widget gets/is realized
 			RunWhenRealized(SubscribeCursorEnterLeaveEvent);
 
 			if (immediateCursorChange) // if realized and mouse inside set immediatly
 				EventsRootWidget.GdkWindow.Cursor = gdkCursor;
+			#endif
 		}
 
+		#if limada_8b3c8a
+		bool realizedEventSubscribed;
+		void SubscribeRealizedEvent ()
+		{
+			if (!realizedEventSubscribed) {
+				realizedEventSubscribed = true;
+				EventsRootWidget.Realized += OnRealized;
+			}
+		}
+
+		void OnRealized (Object s, EventArgs e)
+		{
+			if (gdkCursor != null)
+				EventsRootWidget.GdkWindow.Cursor = gdkCursor;
+		}
+
+		#else
+
 		bool cursorEnterLeaveSubscribed, immediateCursorChange;
+
 		void SubscribeCursorEnterLeaveEvent ()
 		{
 			if (!cursorEnterLeaveSubscribed) {
@@ -239,7 +265,8 @@ namespace Xwt.GtkBackend
 				EventsRootWidget.AddEvents ((int)Gdk.EventMask.LeaveNotifyMask);
 				EventsRootWidget.EnterNotifyEvent += (o, args) => {
 					immediateCursorChange = true;
-					if (gdkCursor != null) ((Gtk.Widget)o).GdkWindow.Cursor = gdkCursor;
+					if (gdkCursor != null)
+						((Gtk.Widget)o).GdkWindow.Cursor = gdkCursor;
 				};
 				EventsRootWidget.LeaveNotifyEvent += (o, args) => {
 					immediateCursorChange = false;
@@ -247,7 +274,9 @@ namespace Xwt.GtkBackend
 				};
 			}
 		}
-		
+
+		#endif
+
 		~WidgetBackend ()
 		{
 			Dispose (false);
@@ -440,20 +469,32 @@ namespace Xwt.GtkBackend
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
 
-			if (visibleWindow) {
-				if (eventBox != null)
-					eventBox.VisibleWindow = true;
-				else if (EventsRootWidget is Gtk.EventBox)
-					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
-			}
+#if true && !XWT_GTK3// limada_8b3c8a
 
-			if (!NeedsEventBox) return;
-
-			if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
+			if (eventBox == null && EventsRootWidget.IsNoWindow) {
 				if (EventsRootWidget is Gtk.EventBox) {
-					((Gtk.EventBox)EventsRootWidget).VisibleWindow = visibleWindow;
+					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
 					return;
 				}
+#else
+
+			// this adds eventbox to canvas; gives errors on using interactive canvas
+
+			if (visibleWindow) {
+					if (eventBox != null)
+						eventBox.VisibleWindow = true;
+					else if (EventsRootWidget is Gtk.EventBox)
+						((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
+				}
+
+				if (!NeedsEventBox) return;
+
+				if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
+					if (EventsRootWidget is Gtk.EventBox) {
+						((Gtk.EventBox)EventsRootWidget).VisibleWindow = visibleWindow;
+						return;
+					}
+#endif
 				eventBox = new Gtk.EventBox ();
 				eventBox.Visible = Widget.Visible;
 				eventBox.Sensitive = Widget.Sensitive;
@@ -764,7 +805,7 @@ namespace Xwt.GtkBackend
 				EventSink.OnMouseScrolled(a);
 			});
 			if (a.Handled)
-			args.RetVal = true;
+				args.RetVal = true;
 		}
 
 		protected virtual MouseScrolledEventArgs GetScrollEventArgs (Gtk.ScrollEventArgs args)
