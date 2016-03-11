@@ -985,8 +985,11 @@ namespace Xwt.GtkBackend
 		internal bool DoDragDrop (Gdk.DragContext context, int x, int y, uint time)
 		{
 			DragDropInfo.LastDragPosition = new Point (x, y);
+			#if !XWT_GTK3 // limada_8b3c8a
+			var cda = ConvertDragAction (context.Action);
+			#else
 			var cda = ConvertDragAction (context.GetSelectedAction());
-
+			#endif
 			DragDropResult res;
 			if ((enabledEvents & WidgetEvent.DragDropCheck) == 0) {
 				if ((enabledEvents & WidgetEvent.DragDrop) != 0)
@@ -995,7 +998,11 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			else {
+				#if !XWT_GTK3 // limada_8b3c8a
+				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.Targets), cda);
+				#else
 				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.ListTargets ()), cda);
+				#endif
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnDragDropCheck (da);
 				});
@@ -1058,6 +1065,7 @@ namespace Xwt.GtkBackend
 	    		if (!Util.GetSelectionData (ApplicationContext, selectionData, DragDropInfo.DragData) && DragDropInfo.DragDataRequests > 0) {
 				return false;
 			}
+
 			if (DragDropInfo.DragDataRequests == 0 && DragDropInfo.DragData.DataTypes.Any ()) {
 				if (DragDropInfo.DragDataForMotion) {
 					// If no specific action is set, it means that no key has been pressed.
@@ -1083,7 +1091,11 @@ namespace Xwt.GtkBackend
 				}
 				else {
 					// Use Context.Action here since that's the action selected in DragOver
+					#if !XWT_GTK3 // limada_8b3c8a
+					var cda = ConvertDragAction (context.Action);
+					#else
 					var cda = ConvertDragAction (context.GetSelectedAction());
+					#endif
 					DragEventArgs da = new DragEventArgs (DragDropInfo.LastDragPosition, DragDropInfo.DragData, cda);
 					ApplicationContext.InvokeUserCode (delegate {
 						EventSink.OnDragDrop (da);
