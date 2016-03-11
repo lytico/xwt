@@ -32,7 +32,6 @@ namespace Xwt.GtkBackend
 {
 	public partial class TextEntryBackend : WidgetBackend, ITextEntryBackend
 	{
-	
 		public override void Initialize ()
 		{
 			Widget = new Gtk.Entry ();
@@ -42,12 +41,12 @@ namespace Xwt.GtkBackend
 		protected virtual Gtk.Entry TextEntry {
 			get { return (Gtk.Entry)base.Widget; }
 		}
-		
+
 		protected new Gtk.Entry Widget {
 			get { return TextEntry; }
 			set { base.Widget = value; }
 		}
-		
+
 		protected new ITextEntryEventSink EventSink {
 			get { return (ITextEntryEventSink)base.EventSink; }
 		}
@@ -74,7 +73,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
-		
+
 		public override Color BackgroundColor {
 			get {
 				return base.BackgroundColor;
@@ -85,41 +84,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-
-		internal static void RenderPlaceholderText (Gtk.Entry entry, Gtk.ExposeEventArgs args, string placeHolderText, ref Pango.Layout layout)
-		{
-			// The Entry's GdkWindow is the top level window onto which
-			// the frame is drawn; the actual text entry is drawn into a
-			// separate window, so we can ensure that for themes that don't
-			// respect HasFrame, we never ever allow the base frame drawing
-			// to happen
-			if (args.Event.Window == entry.GdkWindow)
-				return;
-			
-			if (entry.Text.Length > 0)
-				return;
-			
-			if (layout == null) {
-				layout = new Pango.Layout (entry.PangoContext);
-				layout.FontDescription = entry.PangoContext.FontDescription.Copy ();
-			}
-			
-			int wh, ww;
-			args.Event.Window.GetSize (out ww, out wh);
-			
-			int width, height;
-			layout.SetText (placeHolderText);
-			layout.GetPixelSize (out width, out height);
-			using (var gc = new Gdk.GC (args.Event.Window)) {
-				gc.Copy (entry.Style.TextGC (Gtk.StateType.Normal));
-				Color color_a = entry.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
-				Color color_b = entry.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
-				gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
-
-				args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2 + 1, layout);
-			}
-		}
-		
 		public bool ReadOnly {
 			get {
 				return !Widget.IsEditable;
@@ -128,7 +92,7 @@ namespace Xwt.GtkBackend
 				Widget.IsEditable = !value;
 			}
 		}
-		
+
 		public bool ShowFrame {
 			get {
 				return Widget.HasFrame;
@@ -260,7 +224,7 @@ namespace Xwt.GtkBackend
 				InlineSelection = true
 			};
 		}
-		
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
@@ -278,7 +242,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
-		
+
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
@@ -358,7 +322,6 @@ namespace Xwt.GtkBackend
 				HandleSelectionChanged ();
 			}
 		}
-
 	}
 }
 
