@@ -64,7 +64,7 @@ namespace Xwt.Backends
 		SortDataField,
 		SortIndicatorVisible,
 		Alignment,
-		Expanding
+		Expanding,
 		Width
 	}
 	

@@ -20,7 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <DebugSymbols>true</DebugSymbols>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -342,7 +342,6 @@
     <Compile Include="Xwt\FolderSelector.cs" />
     <Compile Include="Xwt.Backends\IFolderSelectorBackend.cs" />
     <Compile Include="Limaki.Extended\ClipboardBackend.cs" />
-    <Compile Include="Limaki.Extended\ComboBoxCellView.cs" />
     <Compile Include="Limaki.Extended\ListViewColumn.cs" />
     <Compile Include="Xwt\CheckBoxCellView.cs" />
     <Compile Include="Xwt\ToolkitDefaults.cs" />
@@ -352,6 +351,7 @@
     <Compile Include="Xwt.Backends\IPopupWindowBackend.cs" />
     <Compile Include="Xwt\UtilityWindow.cs" />
     <Compile Include="Xwt.Backends\IUtilityWindowBackend.cs" />
+    <Compile Include="Xwt\ComboBoxCellView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

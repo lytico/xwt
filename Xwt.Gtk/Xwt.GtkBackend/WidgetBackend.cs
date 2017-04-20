@@ -846,6 +846,7 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.ConnectBefore]
+		void HandleWidgetFocusInEvent(object o, EventArgs args)
 		{
 			if (!CanGetFocus)
 				return;
@@ -855,6 +856,7 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.ConnectBefore]
+		void HandleLeaveNotifyEvent(object o, Gtk.LeaveNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;
@@ -864,6 +866,7 @@ namespace Xwt.GtkBackend
 		}
 
 		[GLib.ConnectBefore]
+		void HandleEnterNotifyEvent(object o, Gtk.EnterNotifyEventArgs args)
 		{
 			if (args.Event.Detail == Gdk.NotifyType.Inferior)
 				return;

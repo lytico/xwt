@@ -647,8 +647,8 @@ namespace Xwt.WPFBackend
 
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
-			Mouse.Capture(null);
-			Context.InvokeUserCode (delegate ()
+            var args = e.ToXwtButtonArgs (Widget);
+            Context.InvokeUserCode (delegate ()
 			{
 				eventSink.OnButtonReleased (args);
 			});

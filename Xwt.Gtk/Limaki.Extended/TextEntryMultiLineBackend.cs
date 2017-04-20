@@ -330,6 +330,10 @@ namespace Xwt.GtkBackend
 			get { return (ITextEntryEventSink)base.EventSink; }
 		}
 
+		public bool HasCompletions
+		{
+			get { return false;	} }
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
