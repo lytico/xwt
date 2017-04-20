@@ -82,7 +82,9 @@ namespace Xwt.GtkBackend
 		
 		public static bool GetSelectionData (ApplicationContext context, Gtk.SelectionData data, TransferDataStore target)
 		{
-			TransferDataType type = Util.AtomToType (data.Target.Name);
+            if (data == null)
+                return false;
+            TransferDataType type = Util.AtomToType (data.Target.Name);
 			if (type == null || data.Length <= 0)
 				return false;
 
@@ -174,7 +176,8 @@ namespace Xwt.GtkBackend
 					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (atom, 0, id) };
 				}
 				else {
-					entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type.Id, false), 0, id) };
+					// entries = new Gtk.TargetEntry[] { new Gtk.TargetEntry (Gdk.Atom.Intern ("application/" + type.Id, false), 0, id) };
+					entries = new Gtk.TargetEntry [] { new Gtk.TargetEntry (Gdk.Atom.Intern (type.Id, false), 0, id) };
 				}
 				
 				foreach (var a in entries.Select (e => e.Target))

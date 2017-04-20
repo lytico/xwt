@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Xwt.Backends;
+using System.Collections.Generic;
 
 #if MONOMAC
 using nint = System.Int32;
@@ -40,7 +41,7 @@ using AppKit;
 
 namespace Xwt.Mac
 {
-	public class MacClipboardBackend: ClipboardBackend
+	public partial class MacClipboardBackend: ClipboardBackend
 	{
 		PasteboardOwner owner;
 
@@ -101,8 +102,9 @@ namespace Xwt.Mac
 			throw new NotImplementedException ();
 		}
 
-		#endregion
-	}
+
+        #endregion
+    }
 
 	[Register ("XwtPasteboardOwner")]
 	class PasteboardOwner : NSObject
