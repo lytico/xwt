@@ -41,12 +41,12 @@ namespace Xwt.GtkBackend
 		protected virtual Gtk.Entry TextEntry {
 			get { return (Gtk.Entry)base.Widget; }
 		}
-		
+
 		protected new Gtk.Entry Widget {
 			get { return TextEntry; }
 			set { base.Widget = value; }
 		}
-		
+
 		protected new ITextEntryEventSink EventSink {
 			get { return (ITextEntryEventSink)base.EventSink; }
 		}
@@ -92,7 +92,7 @@ namespace Xwt.GtkBackend
 				Widget.IsEditable = !value;
 			}
 		}
-		
+
 		public virtual bool ShowFrame {
 			get {
 				return Widget.HasFrame;
@@ -230,7 +230,7 @@ namespace Xwt.GtkBackend
 				InlineSelection = true
 			};
 		}
-		
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
@@ -248,7 +248,7 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
-		
+
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);

@@ -211,7 +211,7 @@ namespace Xwt.WPFBackend
 			control.FontStretch = font.Stretch;
 		}
 
-		public bool CanGetFocus {
+		public virtual bool CanGetFocus {
 			get { return Widget.Focusable; }
 			set { Widget.Focusable = value; }
 		}
@@ -477,10 +477,10 @@ namespace Xwt.WPFBackend
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
 					case WidgetEvent.KeyPressed:
-						Widget.PreviewKeyDown += WidgetKeyDownHandler;
+						Widget.KeyDown += WidgetKeyDownHandler;
 						break;
 					case WidgetEvent.KeyReleased:
-						Widget.PreviewKeyUp += WidgetKeyUpHandler;
+						Widget.KeyUp += WidgetKeyUpHandler;
 						break;
 					case WidgetEvent.TextInput:
 						TextCompositionManager.AddPreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
@@ -647,7 +647,7 @@ namespace Xwt.WPFBackend
 
 		void WidgetMouseUpHandler (object o, MouseButtonEventArgs e)
 		{
-			var args = e.ToXwtButtonArgs (Widget);
+			Mouse.Capture(null);
 			Context.InvokeUserCode (delegate ()
 			{
 				eventSink.OnButtonReleased (args);
@@ -793,6 +793,30 @@ namespace Xwt.WPFBackend
 			return DragDropAction.Move;
 		}
 
+		static void FillDataStore (TransferDataStore store, IDataObject data) 
+		{
+
+		    store.DataRequestCallback = tdt => {
+			var di = tdt.ToWpfDataFormat();
+			if (data.GetDataPresent(di))
+			    return data.GetData(di);
+			return null;
+		    };
+
+		    foreach (var item in data.GetFormats()) {
+			var format = item.ToXwtTransferType();
+			if (format == TransferDataType.Text)
+			    store.AddText((string)  data.GetData(item));
+			else if (format == TransferDataType.Uri) {
+			    var value = data.GetData(item);
+			    var uris = ((string[]) value).Select(f => new Uri(f)).ToArray();
+			    store.AddUris(uris);
+			} else {
+			    store.AddValue(format,(object) null);
+			}
+		    }
+		}
+
 		static void FillDataStore (TransferDataStore store, IDataObject data, TransferDataType [] types)
 		{
 			foreach (var type in types) {
@@ -905,7 +929,7 @@ namespace Xwt.WPFBackend
 
 			if ((enabledEvents & WidgetEvent.DragOver) > 0) {
 				var store = new TransferDataStore ();
-				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
+				FillDataStore (store, e.Data); //, DragDropInfo.TargetTypes);
 
 				var args = new DragOverEventArgs (pos, store, proposedAction);
 				OnDragOver (sender, args);
@@ -953,7 +977,7 @@ namespace Xwt.WPFBackend
 
 			if ((enabledEvents & WidgetEvent.DragDrop) > 0) {
 				var store = new TransferDataStore ();
-				FillDataStore (store, e.Data, DragDropInfo.TargetTypes);
+				FillDataStore (store, e.Data); //, DragDropInfo.TargetTypes);
 
 				var args = new DragEventArgs (pos, store, actualEffect.ToXwtDropAction ());
 				Context.InvokeUserCode (delegate {

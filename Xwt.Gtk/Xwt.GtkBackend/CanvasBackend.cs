@@ -177,7 +177,12 @@ namespace Xwt.GtkBackend
 			}
 			if (!VisibleWindow) {
 				ctx.Context.Translate (Allocation.X, Allocation.Y);
-			}
+#if limada_8b3c8a
+                // Set ContextBackend Origin
+                ctx.Origin.X = Allocation.X;
+                ctx.Origin.Y = Allocation.Y;
+#endif
+            }
 			return ctx;
 		}
 	}

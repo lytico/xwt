@@ -49,7 +49,7 @@ namespace Xwt
 		}
 		public static void ShowError (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.ErrorIcon, primaryText, secondaryText, Command.Ok);
+			GenericAlert (parent, StockIcons.Error, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -68,7 +68,7 @@ namespace Xwt
 		}
 		public static void ShowWarning (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.WarningIcon, primaryText, secondaryText, Command.Ok);
+			GenericAlert (parent, StockIcons.Warning, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -86,17 +86,18 @@ namespace Xwt
 		{
 			ShowMessage (RootWindow, primaryText, secondaryText);
 		}
-		public static void ShowMessage (string primaryText, string secondaryText, Drawing.Image icon)
+
+		public static void ShowMessage (Xwt.Drawing.Image icon, string primaryText, string secondaryText) 
 		{
-			ShowMessage (RootWindow, primaryText, secondaryText, icon);
+		    ShowMessage (RootWindow, icon, primaryText, secondaryText);
 		}
 		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText)
 		{
-			GenericAlert (parent, Toolkit.CurrentEngine.Defaults.MessageDialog.InformationIcon, primaryText, secondaryText, Command.Ok);
+			GenericAlert (parent, StockIcons.Information, primaryText, secondaryText, Command.Ok);
 		}
-		public static void ShowMessage (WindowFrame parent, string primaryText, string secondaryText, Drawing.Image icon)
-		{
-			GenericAlert (parent, icon, primaryText, secondaryText, Command.Ok);
+
+		public static void ShowMessage (WindowFrame parent, Xwt.Drawing.Image icon, string primaryText, string secondaryText) {
+		    GenericAlert (parent, icon, primaryText, secondaryText, Command.Ok);
 		}
 		#endregion
 		
@@ -108,24 +109,8 @@ namespace Xwt
 		
 		public static bool Confirm (string primaryText, string secondaryText, Command button)
 		{
-			return Confirm (RootWindow, primaryText, secondaryText, button);
+			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, Command.Cancel, button) == button;
 		}
-
-		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button)
-		{
-			return Confirm (RootWindow, primaryText, secondaryText, icon, button);
-		}
-
-		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Command button)
-		{
-			return GenericAlert (window, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, Command.Cancel, button) == button;
-		}
-
-		public static bool Confirm (WindowFrame window, string primaryText, string secondaryText, Drawing.Image icon, Command button)
-		{
-			return GenericAlert (window, icon, primaryText, secondaryText, Command.Cancel, button) == button;
-		}
-
 		public static bool Confirm (string primaryText, Command button, bool confirmIsDefault)
 		{
 			return Confirm (primaryText, null, button, confirmIsDefault);
@@ -133,12 +118,7 @@ namespace Xwt
 		
 		public static bool Confirm (string primaryText, string secondaryText, Command button, bool confirmIsDefault)
 		{
-			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
-		}
-
-		public static bool Confirm (string primaryText, string secondaryText, Drawing.Image icon, Command button, bool confirmIsDefault)
-		{
-			return GenericAlert (RootWindow, icon, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
+			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, confirmIsDefault ? 0 : 1, Command.Cancel, button) == button;
 		}
 		
 		public static bool Confirm (ConfirmationMessage message)
@@ -155,14 +135,8 @@ namespace Xwt
 		
 		public static Command AskQuestion (string primaryText, string secondaryText, params Command[] buttons)
 		{
-			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, buttons);
+			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, buttons);
 		}
-
-		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, params Command [] buttons)
-		{
-			return GenericAlert (RootWindow, icon, primaryText, secondaryText, buttons);
-		}
-
 		public static Command AskQuestion (string primaryText, int defaultButton, params Command[] buttons)
 		{
 			return AskQuestion (primaryText, null, defaultButton, buttons);
@@ -170,12 +144,7 @@ namespace Xwt
 		
 		public static Command AskQuestion (string primaryText, string secondaryText, int defaultButton, params Command[] buttons)
 		{
-			return GenericAlert (RootWindow, Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon, primaryText, secondaryText, defaultButton, buttons);
-		}
-
-		public static Command AskQuestion (string primaryText, string secondaryText, Drawing.Image icon, int defaultButton, params Command [] buttons)
-		{
-			return GenericAlert (RootWindow, icon, primaryText, secondaryText, defaultButton, buttons);
+			return GenericAlert (RootWindow, StockIcons.Question, primaryText, secondaryText, defaultButton, buttons);
 		}
 		
 		public static Command AskQuestion (QuestionMessage message)
@@ -226,7 +195,7 @@ namespace Xwt
 	
 	public class MessageDescription
 	{
-		internal MessageDescription ()
+		public MessageDescription ()
 		{
 			DefaultButton = -1;
 			Buttons = new List<Command> ();
@@ -309,7 +278,7 @@ namespace Xwt
 	{
 		public QuestionMessage ()
 		{
-			Icon = Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon;
+			Icon = StockIcons.Question;
 		}
 		
 		public QuestionMessage (string text): this ()
@@ -333,7 +302,7 @@ namespace Xwt
 		
 		public ConfirmationMessage ()
 		{
-			Icon = Toolkit.CurrentEngine.Defaults.MessageDialog.QuestionIcon;
+			Icon = StockIcons.Question;
 			Buttons.Add (Command.Cancel);
 		}
 		
@@ -371,95 +340,6 @@ namespace Xwt
 					DefaultButton = 1;
 				else
 					DefaultButton = 0;
-			}
-		}
-	}
-
-	public sealed class MessageDialogDefaults
-	{
-		Drawing.Image informationIcon;
-		Drawing.Image warningIcon;
-		Drawing.Image errorIcon;
-		Drawing.Image confirmationIcon;
-		Drawing.Image questionIcon;
-
-		/// <summary>
-		/// Gets or sets the icon shown in Information dialogs.
-		/// </summary>
-		/// <value>The information icon.</value>
-		public Drawing.Image InformationIcon {
-			get {
-				if (informationIcon != null)
-					return informationIcon;
-				return StockIcons.Information;
-			}
-
-			set {
-				informationIcon = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the icon shown in Warning dialogs.
-		/// </summary>
-		/// <value>The warning icon.</value>
-		public Drawing.Image WarningIcon {
-			get {
-				if (warningIcon != null)
-					return warningIcon;
-				return StockIcons.Warning;
-			}
-
-			set {
-				warningIcon = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the icon shown in Error dialogs.
-		/// </summary>
-		/// <value>The error icon.</value>
-		public Drawing.Image ErrorIcon {
-			get {
-				if (errorIcon != null)
-					return errorIcon;
-				return StockIcons.Error;
-			}
-
-			set {
-				errorIcon = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the icon shown in Confirmation dialogs.
-		/// </summary>
-		/// <value>The confirmation icon.</value>
-		public Drawing.Image ConfirmationIcon {
-			get {
-				if (confirmationIcon != null)
-					return confirmationIcon;
-				return StockIcons.Question;
-			}
-
-			set {
-				confirmationIcon = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the icon shown in Question dialogs.
-		/// </summary>
-		/// <value>The question icon.</value>
-		public Drawing.Image QuestionIcon {
-			get {
-				if (questionIcon != null)
-					return questionIcon;
-				return StockIcons.Question;
-			}
-
-			set {
-				questionIcon = value;
 			}
 		}
 	}

@@ -509,7 +509,7 @@ namespace Xwt.Backends
 		/// <param name="imageBackend">The image backend of the drag image.</param>
 		/// <param name="hotX">The image hotspot X coordinate.</param>
 		/// <param name="hotY">The image hotspot Y coordinate.</param>
-		internal DragStartData (TransferDataSource data, DragDropAction action, object imageBackend, double hotX, double hotY)
+		public DragStartData (TransferDataSource data, DragDropAction action, object imageBackend, double hotX, double hotY)
 		{
 			Data = data;
 			DragAction = action;

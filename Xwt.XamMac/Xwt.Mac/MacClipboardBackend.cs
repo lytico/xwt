@@ -27,13 +27,14 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using AppKit;
 using Foundation;
 using Xwt.Backends;
 
 namespace Xwt.Mac
 {
-	public class MacClipboardBackend: ClipboardBackend
+	public partial class MacClipboardBackend: ClipboardBackend
 	{
 		PasteboardOwner owner;
 
@@ -94,8 +95,9 @@ namespace Xwt.Mac
 			throw new NotImplementedException ();
 		}
 
-		#endregion
-	}
+
+        #endregion
+    }
 
 	[Register ("XwtPasteboardOwner")]
 	class PasteboardOwner : NSObject

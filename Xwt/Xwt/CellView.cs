@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class CellView: XwtComponent, ICellViewFrontend
+	public partial class CellView: XwtComponent, ICellViewFrontend
 	{
 		Widget container;
 		bool expands;

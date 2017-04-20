@@ -71,7 +71,11 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IComboBoxBackend, ComboBoxBackend> ();
 			RegisterBackend<IDesignerSurfaceBackend, DesignerSurfaceBackend> ();
 			RegisterBackend<IMenuButtonBackend, MenuButtonBackend> ();
+			#if !XWT_GTK3 // limada_8b3c8a
+			RegisterBackend<ITextEntryBackend, TextEntryMultiLineBackend> ();
+			#else
 			RegisterBackend<ITextEntryBackend, TextEntryBackend> ();
+			#endif
 			RegisterBackend<IToggleButtonBackend, ToggleButtonBackend> ();
 			RegisterBackend<IImageViewBackend, ImageViewBackend> ();
 			RegisterBackend<IAlertDialogBackend, AlertDialogBackend> ();

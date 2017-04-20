@@ -48,6 +48,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
+
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);
@@ -83,5 +84,7 @@ namespace Xwt.GtkBackend
 				EventSink.OnActivated ();
 			});
 		}
+
+
 	}
 }

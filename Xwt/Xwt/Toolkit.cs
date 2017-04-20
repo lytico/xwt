@@ -119,15 +119,21 @@ namespace Xwt
 		/// Gets the application context.
 		/// </summary>
 		/// <value>The application context.</value>
-		internal ApplicationContext Context {
+		public ApplicationContext Context {
 			get { return context; }
+		}
+
+		public static Toolkit Engine<T> () where T : ToolkitEngineBackend {
+		    if (toolkits.ContainsKey(typeof(T)))
+		        return toolkits[typeof(T)];
+		    return null;
 		}
 
 		/// <summary>
 		/// Gets the toolkit backend.
 		/// </summary>
 		/// <value>The toolkit backend.</value>
-		internal ToolkitEngineBackend Backend {
+		public ToolkitEngineBackend Backend {
 			get { return backend; }
 		}
 
@@ -263,6 +269,15 @@ namespace Xwt
 			throw new ArgumentException ("Invalid toolkit type");
 		}
 
+		public static Toolkit CreateToolkit<T> (bool isGuest) where T: ToolkitEngineBackend {
+		    var t = typeof (T);
+		    var result = new Toolkit();
+		    result.backend = (ToolkitEngineBackend)Activator.CreateInstance(t);
+		    result.Initialize(isGuest);
+		    result.toolkitType = ToolkitType.Other;
+		    return result;
+		}
+
 		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
 		{
 			int i = type.IndexOf (',');
@@ -307,6 +322,10 @@ namespace Xwt
 			KeyboardHandler = Backend.CreateBackend<KeyboardHandler> ();
 		}
 
+		public T CreateBackendHandler<T> () {
+		    return Backend.CreateBackend<T>();
+		}
+
 		/// <summary>
 		/// Gets the toolkit backend from a loaded toolkit.
 		/// </summary>
@@ -324,7 +343,7 @@ namespace Xwt
 		/// <summary>
 		/// Set the toolkit as the active toolkit used by Xwt.
 		/// </summary>
-		internal void SetActive ()
+		public void SetActive ()
 		{
 			currentEngine = this;
 		}
@@ -664,7 +683,7 @@ namespace Xwt
 		/// <typeparam name="T">The frontend Type.</typeparam>
 		public T CreateFrontend<T> (object ob)
 		{
-			throw new NotImplementedException ();
+			return Backend.CreateFrontend<T>(ob);
 		}
 
 		/// <summary>
@@ -723,18 +742,18 @@ namespace Xwt
 			return img;
 		}
 
-		internal ContextBackendHandler ContextBackendHandler;
-		internal GradientBackendHandler GradientBackendHandler;
-		internal TextLayoutBackendHandler TextLayoutBackendHandler;
-		internal FontBackendHandler FontBackendHandler;
-		internal ClipboardBackend ClipboardBackend;
-		internal ImageBuilderBackendHandler ImageBuilderBackendHandler;
-		internal ImagePatternBackendHandler ImagePatternBackendHandler;
-		internal ImageBackendHandler ImageBackendHandler;
-		internal DrawingPathBackendHandler DrawingPathBackendHandler;
-		internal DesktopBackend DesktopBackend;
-		internal VectorImageRecorderContextHandler VectorImageRecorderContextHandler;
-		internal KeyboardHandler KeyboardHandler;
+		public ContextBackendHandler ContextBackendHandler;
+		public GradientBackendHandler GradientBackendHandler;
+		public TextLayoutBackendHandler TextLayoutBackendHandler;
+		public FontBackendHandler FontBackendHandler;
+		public ClipboardBackend ClipboardBackend;
+		public ImageBuilderBackendHandler ImageBuilderBackendHandler;
+		public ImagePatternBackendHandler ImagePatternBackendHandler;
+		public ImageBackendHandler ImageBackendHandler;
+		public DrawingPathBackendHandler DrawingPathBackendHandler;
+		public DesktopBackend DesktopBackend;
+		public VectorImageRecorderContextHandler VectorImageRecorderContextHandler;
+		public KeyboardHandler KeyboardHandler;
 	}
 
 	class NativeWindowFrame: WindowFrame

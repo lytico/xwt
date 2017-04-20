@@ -47,6 +47,7 @@ namespace Xwt.GtkBackend
 			view.ContextMenu += HandleContextMenuRequest;
 			Widget = view;
 			Widget.Show ();
+			//view.EnableScrollbars();
 		}
 
 		public string Url {

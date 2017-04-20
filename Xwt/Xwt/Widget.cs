@@ -81,7 +81,7 @@ namespace Xwt
 		EventHandler boundsChanged;
 		EventHandler<MouseScrolledEventArgs> mouseScrolled;
 		
-		EventHandler gotFocus;
+		protected EventHandler gotFocus;
 		EventHandler lostFocus;
 		
 		/// <summary>
@@ -361,7 +361,7 @@ namespace Xwt
 		/// Gets the backend.
 		/// </summary>
 		/// <value>The backend.</value>
-		IWidgetBackend Backend {
+		protected IWidgetBackend Backend {
 			get { return (IWidgetBackend) BackendHost.Backend; }
 		}
 		
@@ -876,7 +876,7 @@ namespace Xwt
 		/// Starts a drag operation with the specified drag start arguments.
 		/// </summary>
 		/// <param name="sdata">The drag start arguments to start the drag with.</param>
-		internal void DragStart (DragStartData sdata)
+		public void DragStart (DragStartData sdata)
 		{
 			Backend.DragStart (sdata);
 		}
@@ -1181,7 +1181,7 @@ namespace Xwt
 		/// The event will be enabled in the backend automatically, if <see cref="Xwt.Widget.OnGotFocus"/>
 		/// is overridden.
 		/// </remarks>
-		internal protected virtual void OnGotFocus (EventArgs args)
+		protected virtual void OnGotFocus (EventArgs args)
 		{
 			if (gotFocus != null)
 				gotFocus (this, args);
