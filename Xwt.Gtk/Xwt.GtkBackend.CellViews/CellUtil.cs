@@ -98,9 +98,14 @@ namespace Xwt.GtkBackend
 			if (view is TextCellView) {
 				Gtk.Label lab = new Gtk.Label ();
 				lab.Xalign = 0;
-//				lab.Text = ((TextCellView)view).TextField;
+				lab.Text = ((TextCellView)view).Text;
 				return lab;
 			}
+            if (view is CheckBoxCellView) {
+                var chkBox = new Gtk.CheckButton();
+                chkBox.Clicked += (s, e) => ((CheckBoxCellView)view).RaiseToggled ();
+                return chkBox;
+            }
 			throw new NotImplementedException ();
 		}
 
