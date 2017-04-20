@@ -293,11 +293,13 @@
       <Link>Xwt.Mac\SelectFontDialogBackend.cs</Link>
     </Compile>
     <Compile Include="Xwt.Mac\NSStringAttributeKey.cs" />
+    <Compile Include="Limaki.Extended\MacClipboardBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Xwt.Mac\" />
     <Folder Include="Xwt.Mac.CellViews\" />
+    <Folder Include="Limaki.Extended\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xwt\Xwt.csproj">
