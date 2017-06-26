@@ -249,25 +249,19 @@ namespace Xwt.Gtk.Windows
 		void HandleDocumentTitleChanged (object sender, EventArgs e)
 		{
 			if (enableTitleChangedEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnTitleChanged ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnTitleChanged);
 		}
 
 		void HandleNavigated (object sender, SWF.WebBrowserNavigatedEventArgs e)
 		{
 			if (enableLoadingEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnLoading ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnLoading);
 		}
 
 		void HandleLoaded (object sender, EventArgs e)
 		{
 			if (enableLoadedEvent)
-				ApplicationContext.InvokeUserCode (delegate {
-					EventSink.OnLoaded ();
-				});
+				ApplicationContext.InvokeUserCode (EventSink.OnLoaded);
 		}
 	}
 }
