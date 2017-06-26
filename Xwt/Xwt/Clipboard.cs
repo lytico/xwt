@@ -34,10 +34,18 @@ namespace Xwt
 {
 	public static partial class Clipboard
 	{
+		// Cache the toolkit the first time we access the Clipboard and then always use
+		//  the same one, otherwise we will get inconsistent results from APIs like ContainsData<T>().
+		static Toolkit toolkit;
+
 		static ClipboardBackend Backend {
-			get { return Toolkit.CurrentEngine.ClipboardBackend; }
+			get {
+				if (toolkit == null)
+					toolkit = Toolkit.CurrentEngine;
+				return toolkit.ClipboardBackend;
+			}
 		}
-		
+
 		public static void Clear ()
 		{
 			Backend.Clear ();
