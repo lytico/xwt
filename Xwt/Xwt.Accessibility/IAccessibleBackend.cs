@@ -36,6 +36,8 @@ namespace Xwt.Backends
 
 		bool IsAccessible { get; set; }
 
+		string Identifier { get; set; }
+
 		string Label { get; set; }
 
 		string Title { get; set; }
@@ -43,6 +45,8 @@ namespace Xwt.Backends
 		string Description { get; set; }
 
 		string Value { get; set; }
+
+		Uri Uri { get; set; }
 
 		Rectangle Bounds { get; set; }
 

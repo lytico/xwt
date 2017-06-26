@@ -102,6 +102,15 @@ namespace Xwt.Accessibility
 			}
 		}
 
+		public string Identifier {
+			get {
+				return Backend.Identifier;
+			}
+			set {
+				Backend.Identifier = value;
+			}
+		}
+
 		public string Label {
 			get {
 				return Backend.Label;
@@ -135,6 +144,15 @@ namespace Xwt.Accessibility
 			}
 			set {
 				Backend.Value = value;
+			}
+		}
+
+		public Uri Uri {
+			get {
+				return Backend.Uri;
+			}
+			set {
+				Backend.Uri = value;
 			}
 		}
 
@@ -191,6 +209,8 @@ namespace Xwt.Accessibility
 
 		public string Description { get; set; }
 
+		public string Identifier { get; set; }
+
 		public string Label { get; set; }
 
 		public Role Role { get; set; }
@@ -200,6 +220,8 @@ namespace Xwt.Accessibility
 		public string Title { get; set; }
 
 		public string Value { get; set; }
+
+		public Uri Uri { get; set; }
 
 		public bool IsAccessible { get; set; }
 

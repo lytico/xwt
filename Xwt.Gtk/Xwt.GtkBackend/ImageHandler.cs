@@ -519,6 +519,7 @@ namespace Xwt.GtkBackend
 			this.SetHasWindow (false);
 			this.SetAppPaintable (true);
 			this.actx = actx;
+			Accessible.Role = Atk.Role.Image;
 		}
 
 		public ImageDescription Image {
