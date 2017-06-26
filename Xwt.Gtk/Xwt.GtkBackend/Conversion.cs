@@ -256,6 +256,8 @@ namespace Xwt.GtkBackend
 				return Atk.Role.Unknown;
 			case Accessibility.Role.Disclosure:
 				return Atk.Role.Arrow;
+			case Accessibility.Role.Filler:
+				return Atk.Role.Filler;
 			case Accessibility.Role.Group:
 				return Atk.Role.Panel;
 			case Accessibility.Role.Image:
@@ -378,8 +380,8 @@ namespace Xwt.GtkBackend
 			//	break;
 			//case Atk.Role.FileChooser:
 			//	break;
-			//case Atk.Role.Filler:
-			//	break;
+			case Atk.Role.Filler:
+				return Accessibility.Role.Filler;
 			//case Atk.Role.FontChooser:
 			//	break;
 			//case Atk.Role.Frame:
