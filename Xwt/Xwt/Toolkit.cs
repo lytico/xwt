@@ -573,7 +573,7 @@ namespace Xwt
 		/// </summary>
 		/// <returns>An Xwt widget with the specified native widget backend.</returns>
 		/// <param name="nativeWidget">The native widget.</param>
-		public Widget WrapWidget (object nativeWidget, NativeWidgetSizing preferredSizing = NativeWidgetSizing.External)
+		public Widget WrapWidget (object nativeWidget, NativeWidgetSizing preferredSizing = NativeWidgetSizing.External, bool reparent = true)
 		{
 			var externalWidget = nativeWidget as Widget;
 			if (externalWidget != null) {
@@ -582,7 +582,7 @@ namespace Xwt
 				nativeWidget = externalWidget.Surface.ToolkitEngine.GetNativeWidget (externalWidget);
 			}
 			var embedded = CreateObject<EmbeddedNativeWidget> ();
-			embedded.Initialize (nativeWidget, externalWidget, preferredSizing);
+			embedded.Initialize (nativeWidget, externalWidget, preferredSizing, reparent);
 			return embedded;
 		}
 
