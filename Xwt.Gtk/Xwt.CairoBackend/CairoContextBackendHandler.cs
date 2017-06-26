@@ -47,11 +47,12 @@ namespace Xwt.CairoBackend
 		public StyleSet Styles;
 		internal Point Origin = Point.Zero;
 
-		Stack<Data> dataStack = new Stack<Data> ();
+		Data stackTop;
 
-		struct Data {
+		class Data {
 			public double PatternAlpha;
 			public double GlobalAlpha;
+			public Data Previous;
 		}
 
 		public CairoContextBackend (double scaleFactor)
@@ -74,16 +75,21 @@ namespace Xwt.CairoBackend
 		public void Save ()
 		{
 			Context.Save ();
-			dataStack.Push (new Data () {
+			stackTop = new Data {
 				PatternAlpha = PatternAlpha,
-				GlobalAlpha = GlobalAlpha
-			});
+				GlobalAlpha = GlobalAlpha,
+				Previous = stackTop,
+			};
 		}
 
 		public void Restore ()
 		{
 			Context.Restore ();
-			var d = dataStack.Pop ();
+			if (stackTop == null)
+				return;
+
+			var d = stackTop;
+			stackTop = stackTop.Previous;
 			PatternAlpha = d.PatternAlpha;
 			GlobalAlpha = d.GlobalAlpha;
 		}
