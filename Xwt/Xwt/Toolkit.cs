@@ -297,7 +297,6 @@ namespace Xwt
 			catch (Exception ex) {
 				if (throwIfFails)
 					throw new Exception ("Toolkit could not be loaded", ex);
-				Application.NotifyException (ex);
 			}
 			if (throwIfFails)
 				throw new Exception ("Toolkit could not be loaded");
