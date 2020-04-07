@@ -40,7 +40,7 @@ namespace Xwt.GtkBackend {
         GtkMultilineTextEntry textView;
 
         public string Text {
-            get { return TextView.Buffer.Text; }
+            get => TextView.Buffer.Text;
             set {
                 bufferSizeRequest = true;
                 if (value == null)
@@ -51,12 +51,12 @@ namespace Xwt.GtkBackend {
         }
 
         public Alignment TextAlignment {
-            get { return TextView.Justification.ToXwtValue (); }
-            set { TextView.Justification = value.ToGtkValue (); }
+            get => TextView.Justification.ToXwtValue ();
+            set => TextView.Justification = value.ToGtkValue ();
         }
 
         public bool ReadOnly {
-            get { return !TextView.Editable; }
+            get => !TextView.Editable;
             set {
                 TextView.Editable = !value;
                 TextView.CursorVisible = !value;
@@ -64,12 +64,12 @@ namespace Xwt.GtkBackend {
         }
 
         public bool MultiLine {
-            get { return TextView.MultiLine; }
-            set { TextView.MultiLine = value; }
+            get => TextView.MultiLine;
+            set => TextView.MultiLine = value;
         }
 
         public bool ShowFrame {
-            get { return ((Gtk.Frame)Widget).ShadowType != Gtk.ShadowType.None; }
+            get => ((Gtk.Frame)Widget).ShadowType != Gtk.ShadowType.None;
             set {
                 if (value)
                     ((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
@@ -78,9 +78,7 @@ namespace Xwt.GtkBackend {
             }
         }
 
-        protected virtual GtkMultilineTextEntry TextView {
-            get { return textView; }
-        }
+        protected virtual GtkMultilineTextEntry TextView => textView;
 
         public string PlaceholderText {
             get { return placeholderText; }
@@ -99,9 +97,7 @@ namespace Xwt.GtkBackend {
             }
         }
 
-        protected Pango.Layout Layout {
-            get { return layout ?? (layout = new Pango.Layout (TextView.PangoContext)); }
-        }
+        protected Pango.Layout Layout => layout ??= new Pango.Layout (TextView.PangoContext);
 #if XWT_GTKSHARP3
         // TODO
 #else
@@ -117,7 +113,7 @@ namespace Xwt.GtkBackend {
         //}
 #endif
         public override object Font {
-            get { return base.Font; }
+            get => base.Font;
             set {
                 base.Font = value;
                 TextView.ModifyFont ((Pango.FontDescription)value);
@@ -250,9 +246,7 @@ namespace Xwt.GtkBackend {
 
         #region Eventhandling
 
-        protected new ITextEntryEventSink EventSink {
-            get { return (ITextEntryEventSink)base.EventSink; }
-        }
+        protected new ITextEntryEventSink EventSink => (ITextEntryEventSink)base.EventSink;
 
         public bool HasCompletions => throw new NotImplementedException ();
 
@@ -380,9 +374,7 @@ namespace Xwt.GtkBackend {
         Pango.Layout xLayout;
 
         public bool MultiLine {
-            get {
-                return multiline;
-            }
+            get => multiline;
             set {
                 if (multiline != value) {
                     multiline = value;
@@ -395,9 +387,7 @@ namespace Xwt.GtkBackend {
             }
         }
 
-        protected Pango.Layout XLayout {
-            get { return xLayout ?? (xLayout = CreatePangoLayout ("X")); }
-        }
+        protected Pango.Layout XLayout => xLayout ?? (xLayout = CreatePangoLayout ("X"));
 
         protected override void OnSizeAllocated (Gdk.Rectangle allocation) {
             int width;
