@@ -18,6 +18,11 @@ namespace Xwt {
             return result;
         }
 
+        public T CreateFrontend<T> (object ob)
+        {
+            return Backend.CreateFrontend<T>(ob);
+        }
+        
         public T CreateBackendHandler<T> () {
             return Backend.CreateBackend<T> ();
         }
@@ -30,6 +35,7 @@ namespace Xwt {
             t.Initialize (isGuest);
             return t;
         }
+ 
     }
 
     public static partial class Application {

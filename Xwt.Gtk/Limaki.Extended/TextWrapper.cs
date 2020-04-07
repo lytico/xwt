@@ -27,7 +27,6 @@
 using System;
 using Xwt.Drawing;
 using System.Linq;
-using Xwt.Backends;
 using Xwt;
 using Xwt.GtkBackend;
 using Xwt.CairoBackend;
@@ -35,7 +34,6 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-
 	public class TextWrapper
 	{
 

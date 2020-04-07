@@ -224,7 +224,7 @@ namespace Xwt.Drawing
 		}
 	}
 
-	class VectorImageRecorderContextHandler: ContextBackendHandler
+	public class VectorImageRecorderContextHandler: ContextBackendHandler
 	{
 		Toolkit toolkit;
 

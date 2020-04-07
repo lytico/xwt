@@ -753,9 +753,9 @@ namespace Xwt
 		/// <returns>The Xwt frontend.</returns>
 		/// <param name="ob">The toolkit backend.</param>
 		/// <typeparam name="T">The frontend Type.</typeparam>
-		public T CreateFrontend<T> (object ob)
+		T CreateFrontend__<T> (object ob)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException ($"see {nameof(CreateFrontend)}");
 		}
 
 		/// <summary>
@@ -814,18 +814,18 @@ namespace Xwt
 			return img;
 		}
 
-		internal ContextBackendHandler ContextBackendHandler;
-		internal GradientBackendHandler GradientBackendHandler;
-		internal TextLayoutBackendHandler TextLayoutBackendHandler;
-		internal FontBackendHandler FontBackendHandler;
-		internal ClipboardBackend ClipboardBackend;
-		internal ImageBuilderBackendHandler ImageBuilderBackendHandler;
-		internal ImagePatternBackendHandler ImagePatternBackendHandler;
-		internal ImageBackendHandler ImageBackendHandler;
-		internal DrawingPathBackendHandler DrawingPathBackendHandler;
-		internal DesktopBackend DesktopBackend;
-		internal VectorImageRecorderContextHandler VectorImageRecorderContextHandler;
-		internal KeyboardHandler KeyboardHandler;
+		public ContextBackendHandler ContextBackendHandler;
+		public GradientBackendHandler GradientBackendHandler;
+		public TextLayoutBackendHandler TextLayoutBackendHandler;
+		public FontBackendHandler FontBackendHandler;
+		public ClipboardBackend ClipboardBackend;
+		public ImageBuilderBackendHandler ImageBuilderBackendHandler;
+		public ImagePatternBackendHandler ImagePatternBackendHandler;
+		public ImageBackendHandler ImageBackendHandler;
+		public DrawingPathBackendHandler DrawingPathBackendHandler;
+		public DesktopBackend DesktopBackend;
+		public VectorImageRecorderContextHandler VectorImageRecorderContextHandler;
+		public KeyboardHandler KeyboardHandler;
 	}
 
 	class NativeWindowFrame: WindowFrame

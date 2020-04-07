@@ -83,6 +83,9 @@
     <Compile Include="..\Xwt.Gtk\AssemblyInfo.Gtk3.cs">
       <Link>AssemblyInfo.Gtk3.cs</Link>
     </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\CellUtil.cs">
+      <Link>Limaki.Extended\CellUtil.cs</Link>
+    </Compile>
     <Compile Include="..\Xwt.Gtk\Limaki.Extended\ConversionLmk.cs">
       <Link>Limaki.Extended\ConversionLmk.cs</Link>
     </Compile>
