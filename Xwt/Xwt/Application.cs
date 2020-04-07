@@ -399,6 +399,7 @@ namespace Xwt
 		Wpf = 3,
 		XamMac = 4,
 		Gtk3 = 5,
+		Other = 6,
 	}
 }
 
