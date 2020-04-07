@@ -67,7 +67,8 @@ namespace Xwt.Backends
 		SortDataField,
 		SortIndicatorVisible,
 		Alignment,
-		Expanding
+		Expanding,
+		Width
 	}
 	
 	public enum TreeViewEvent
