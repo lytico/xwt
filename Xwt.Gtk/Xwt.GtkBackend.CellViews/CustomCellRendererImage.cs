@@ -86,11 +86,7 @@ namespace Xwt.GtkBackend
 			pix.Draw (Context, cr, Util.GetScaleFactor (widget), cell_area.X + x_offset, cell_area.Y + y_offset, img);
 
 		}
-
-		
-#if XWT_GTKSHARP3
-		// TODO GTKSHARP
-#else		
+	
 		protected override void OnGetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			if (image.IsNull) {
@@ -105,6 +101,6 @@ namespace Xwt.GtkBackend
 			} else
 				x_offset = y_offset = 0;
 		}
-#endif
+
 	}
 }
