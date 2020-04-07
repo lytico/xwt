@@ -49,7 +49,7 @@ namespace Xwt
 		Descending
 	}
 
-	public class ListViewColumn: ICellContainer
+	public partial class ListViewColumn: ICellContainer
 	{
 		CellViewCollection views;
 		string title;

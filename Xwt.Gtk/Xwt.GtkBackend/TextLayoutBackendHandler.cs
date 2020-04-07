@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 
 namespace Xwt.GtkBackend
 {
-	public class GtkTextLayoutBackendHandler: TextLayoutBackendHandler
+	public partial class GtkTextLayoutBackendHandler: TextLayoutBackendHandler
 	{
 		static Cairo.Context SharedContext;
 		

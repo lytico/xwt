@@ -32,7 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Drawing
 {
-	public sealed class TextLayout: XwtObject, IDisposable
+	public sealed partial class TextLayout: XwtObject, IDisposable
 	{
 		TextLayoutBackendHandler handler;
 

@@ -33,7 +33,7 @@ using Xwt.Accessibility;
 namespace Xwt
 {
 	[BackendType (typeof(IMenuItemBackend))]
-	public class MenuItem: XwtComponent, ICellContainer
+	public partial class MenuItem: XwtComponent, ICellContainer
 	{
 		CellViewCollection cells;
 		Menu subMenu;

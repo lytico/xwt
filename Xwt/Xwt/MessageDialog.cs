@@ -30,7 +30,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public static class MessageDialog
+	public static partial class MessageDialog
 	{
 		public static WindowFrame RootWindow { get; set; }
 		
@@ -316,9 +316,9 @@ namespace Xwt
 		}
 	}
 	
-	public class MessageDescription
+	public partial class MessageDescription
 	{
-		internal MessageDescription ()
+		public MessageDescription ()
 		{
 			DefaultButton = -1;
 			Buttons = new List<Command> ();

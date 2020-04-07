@@ -33,7 +33,7 @@ using System.Collections.Generic;
 
 namespace Xwt
 {
-	public class CellView: XwtComponent, ICellViewFrontend
+	public partial class CellView: XwtComponent, ICellViewFrontend
 	{
 		Widget container;
 		bool expands;
@@ -232,7 +232,7 @@ namespace Xwt
 		/// <param name="field">Field.</param>
 		/// <param name="defaultValue">Default value to be returned if the field has no value</param>
 		/// <typeparam name="T">Type of the value</typeparam>
-		protected T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
+		public T GetValue<T> (IDataField<T> field, T defaultValue = default(T))
 		{
 			if (DataSource != null && field != null) {
 				var result = DataSource.GetValue (field);

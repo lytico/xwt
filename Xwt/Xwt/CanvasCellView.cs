@@ -29,7 +29,7 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class CanvasCellView: CellView, ICanvasCellViewFrontend
+	public partial class CanvasCellView: CellView, ICanvasCellViewFrontend
 	{
 		public CanvasCellView ()
 		{

@@ -33,7 +33,7 @@ using System.Collections.Generic;
 namespace Xwt
 {
 	[BackendType (typeof(IListStoreBackend))]
-	public class ListStore: XwtComponent, IListDataSource
+	public partial class ListStore: XwtComponent, IListDataSource
 	{
 		IDataField[] fields;
 		

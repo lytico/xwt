@@ -32,7 +32,7 @@ using Xwt.Accessibility;
 namespace Xwt
 {
 	[BackendType (typeof(IMenuBackend))]
-	public class Menu: XwtComponent
+	public partial class Menu: XwtComponent
 	{
 		MenuItemCollection items;
 

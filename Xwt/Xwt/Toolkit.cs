@@ -33,7 +33,7 @@ using System.Threading;
 
 namespace Xwt
 {
-	public sealed class Toolkit: IFrontend
+	public sealed partial class Toolkit: IFrontend
 	{
 		static Toolkit currentEngine;
 		static Toolkit nativeEngine;
@@ -129,7 +129,7 @@ namespace Xwt
 		/// Gets the toolkit backend.
 		/// </summary>
 		/// <value>The toolkit backend.</value>
-		internal ToolkitEngineBackend Backend {
+		public ToolkitEngineBackend Backend {
 			get { return backend; }
 		}
 
@@ -334,7 +334,7 @@ namespace Xwt
 		/// <summary>
 		/// Set the toolkit as the active toolkit used by Xwt.
 		/// </summary>
-		internal void SetActive ()
+		public void SetActive ()
 		{
 			currentEngine = this;
 		}

@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace Xwt.Backends
 {
-	public abstract class TextLayoutBackendHandler: DisposableResourceBackendHandler
+	public abstract partial class TextLayoutBackendHandler: DisposableResourceBackendHandler
 	{
 		public abstract object Create ();
 

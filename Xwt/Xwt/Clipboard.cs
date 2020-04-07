@@ -31,7 +31,7 @@ using Xwt.Drawing;
 
 namespace Xwt
 {
-	public static class Clipboard
+	public static partial class Clipboard
 	{
 		// Cache the toolkit the first time we access the Clipboard and then always use
 		//  the same one, otherwise we will get inconsistent results from APIs like ContainsData<T>().
