@@ -249,6 +249,20 @@ namespace Xwt.Interop {
 		[DllImport(GtkInterop.LIBGTK)]
 		public static extern IntPtr gtk_spinner_get_type();
 #endif		
+		
+		/*
+Pattern:
+
+#endif
+#if XWT_GTKSHARP3
+		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+		public delegate IntPtr d_funcname(IntPtr raw, ...);
+		public static d_funcname funcname = FuncLoader.LoadFunction<d_funcname>(FuncLoader.GetProcAddress(GLibrary.Load(Library.*), "funcname"));
+#else
+
+		 
+		 
+		 */		
 	}
 	
 }
