@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Xwt\Xwt.csproj" />
   </ItemGroup>
-<ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="class.png">
       <LogicalName>class.png</LogicalName>
     </EmbeddedResource>
@@ -38,6 +38,34 @@
     <EmbeddedResource Include="zoom-panel-dark%402x.9.png">
       <LogicalName>zoom-panel-dark@2x.9.png</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="icons\add-simple-16.png">
+      <LogicalName>add-simple-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-16@2x.png">
+      <LogicalName>add-simple-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-disabled-16.png">
+      <LogicalName>add-simple-disabled-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\add-simple-disabled-16@2x.png">
+      <LogicalName>add-simple-disabled-16@2x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\remove-simple-16.png">
+      <LogicalName>remove-simple-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\remove-simple-16@2x.png">
+      <LogicalName>remove-simple-16@2x.png</LogicalName>
+    </EmbeddedResource>
+   <EmbeddedResource Include="icons\remove-simple-disabled-16.png">
+      <LogicalName>remove-simple-disabled-16.png</LogicalName>
+    </EmbeddedResource>
+   <EmbeddedResource Include="icons\remove-simple-disabled-16@2x.png">
+      <LogicalName>remove-simple-disabled-16@2x.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="..\..\Testing\Tests\ninep-ss.9.png">
       <Link>Samples\ninep-ss.9.png</Link>
       <LogicalName>ninep-ss.9.png</LogicalName>
