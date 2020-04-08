@@ -378,6 +378,8 @@
     <Compile Include="..\Xwt.Gtk\Xwt.CairoBackend\CairoContextBackendHandler.cs">
       <Link>Xwt.Gtk\Xwt.CairoBackend\CairoContextBackendHandler.cs</Link>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\Xwt.Gtk\Limaki.Extended\ComboBoxBackend.cs">
       <Link>Xwt.Gtk\Limaki.Extended\ComboBoxBackend.cs</Link>
     </Compile>
