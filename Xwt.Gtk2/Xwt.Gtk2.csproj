@@ -404,23 +404,6 @@
       <Link>Xwt.CairoBackend\CairoContextBackendHandler.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup Condition="false">
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\ComboBoxBackend.cs">
-      <Link>Limaki.Extended\ComboBoxBackend.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend1.cs">
-      <Link>Limaki.Extended\TextEntryMultiLineBackend1.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkClipboardBackend.cs">
-      <Link>Limaki.Extended\GtkClipboardBackend.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\WidgetBackend.cs">
-      <Link>Limaki.Extended\WidgetBackend.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend.cs">
-      <Link>Limaki.Extended\TextEntryMultiLineBackend.cs</Link>
-    </Compile>
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Xwt.Gtk\icons\searchbox-clear-16.png">
       <LogicalName>searchbox-clear-16.png</LogicalName>
