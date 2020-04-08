@@ -836,7 +836,7 @@ namespace Xwt.GtkBackend
 		static Dictionary<IntPtr,ForallDelegate> forallCallbacks;
 		static bool containerLeakFixed;
 
-#if GTK2		
+#if !XWT_GTK3	
 		// Works around BXC #3801 - Managed Container subclasses are incorrectly resurrected, then leak.
 		// It does this by registering an alternative callback for gtksharp_container_override_forall, which
 		// ignores callbacks if the wrapper no longer exists. This means that the objects no longer enter a
