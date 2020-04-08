@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Xwt.GtkBackend;
 
 namespace Xwt.Interop {
     public static class DllImportPangoCairo {
