@@ -23,7 +23,7 @@ namespace Xwt.Interop {
 		
 #else
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		public private static extern IntPtr gtk_font_selection_get_preview_entry (IntPtr raw);
+		public static extern IntPtr gtk_font_selection_get_preview_entry (IntPtr raw);
 #endif	
 		
 #if XWT_GTKSHARP3
@@ -68,7 +68,7 @@ namespace Xwt.Interop {
 		public static d_gtk_scrolled_window_get_overlay_policy  gtk_scrolled_window_get_overlay_policy = FuncLoader.LoadFunction<d_gtk_scrolled_window_get_overlay_policy>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_scrolled_window_get_overlay_policy"));
 #else
 		[DllImport (GtkInterop.LIBGTK)]
-		static extern void gtk_scrolled_window_get_overlay_policy (IntPtr sw, out Gtk.PolicyType hpolicy, out Gtk.PolicyType vpolicy);
+		public static extern void gtk_scrolled_window_get_overlay_policy (IntPtr sw, out Gtk.PolicyType hpolicy, out Gtk.PolicyType vpolicy);
 #endif
 		
 #if XWT_GTKSHARP3
@@ -99,7 +99,7 @@ namespace Xwt.Interop {
 		public static d_gtk_icon_source_set_scale  gtk_icon_source_set_scale = FuncLoader.LoadFunction<d_gtk_icon_source_set_scale>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_icon_source_set_scale"));
 #else
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
+		public static extern void gtk_icon_source_set_scale (IntPtr source, double scale);
 #endif
 #if XWT_GTKSHARP3
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
@@ -107,7 +107,7 @@ namespace Xwt.Interop {
 		public static d_gtk_icon_source_set_scale_wildcarded  gtk_icon_source_set_scale_wildcarded = FuncLoader.LoadFunction<d_gtk_icon_source_set_scale_wildcarded>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_icon_source_set_scale_wildcarded"));
 #else
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
+		public static extern void gtk_icon_source_set_scale_wildcarded (IntPtr source, bool setting);
 #endif
 #if XWT_GTKSHARP3
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
@@ -115,7 +115,7 @@ namespace Xwt.Interop {
 		public static d_gtk_widget_get_scale_factor gtk_widget_get_scale_factor = FuncLoader.LoadFunction<d_gtk_widget_get_scale_factor>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_widget_get_scale_factor"));
 #else
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern double gtk_widget_get_scale_factor (IntPtr widget);
+		public static extern double gtk_widget_get_scale_factor (IntPtr widget);
 #endif
 #if XWT_GTKSHARP3
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
@@ -123,7 +123,7 @@ namespace Xwt.Interop {
 		public static d_gdk_screen_get_monitor_scale_factor gdk_screen_get_monitor_scale_factor = FuncLoader.LoadFunction<d_gdk_screen_get_monitor_scale_factor>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gdk_screen_get_monitor_scale_factor"));
 #else
 		[DllImport (GtkInterop.LIBGDK, CallingConvention = CallingConvention.Cdecl)]
-		static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
+		public static extern double gdk_screen_get_monitor_scale_factor (IntPtr widget, int monitor);
 #endif
 
 #if XWT_GTKSHARP3
@@ -132,7 +132,7 @@ namespace Xwt.Interop {
 		public static d_gtk_icon_set_render_icon_scaled gtk_icon_set_render_icon_scaled = FuncLoader.LoadFunction<d_gtk_icon_set_render_icon_scaled>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_icon_set_render_icon_scaled"));
 #else
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
+		public static extern IntPtr gtk_icon_set_render_icon_scaled (IntPtr handle, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr intPtr, ref double scale);
 #endif	
 		
 #if XWT_GTKSHARP3
@@ -151,7 +151,7 @@ namespace Xwt.Interop {
 		public static d_gtk_binding_set_find gtk_binding_set_find = FuncLoader.LoadFunction<d_gtk_binding_set_find>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_binding_set_find"));
 #else
 		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern IntPtr gtk_binding_set_find (string setName);
+		public static extern IntPtr gtk_binding_set_find (string setName);
 #endif
 #if XWT_GTKSHARP3
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
@@ -159,7 +159,7 @@ namespace Xwt.Interop {
 		public static d_gtk_binding_entry_remove gtk_binding_entry_remove = FuncLoader.LoadFunction<d_gtk_binding_entry_remove>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_binding_entry_remove"));
 #else
 		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		static extern void gtk_binding_entry_remove (IntPtr bindingSet, uint keyval, Gdk.ModifierType modifiers);
+		public static extern void gtk_binding_entry_remove (IntPtr bindingSet, uint keyval, Gdk.ModifierType modifiers);
 #endif		
 
 #if XWT_GTKSHARP3
@@ -204,7 +204,7 @@ namespace Xwt.Interop {
 		public static d_gtk_label_set_attributes gtk_label_set_attributes = FuncLoader.LoadFunction<d_gtk_label_set_attributes>(FuncLoader.GetProcAddress(GLibrary.Load(Library.Gtk), "gtk_label_set_attributes"));
 #else
 		[DllImport (GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
-		public extern void gtk_label_set_attributes (IntPtr label, IntPtr attrList);
+		public static extern void gtk_label_set_attributes (IntPtr label, IntPtr attrList);
 		
 #endif		
 
