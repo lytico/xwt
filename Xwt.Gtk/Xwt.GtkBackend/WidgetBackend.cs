@@ -237,7 +237,7 @@ namespace Xwt.GtkBackend
 			// subscribe mouse entered/leaved events, when widget gets/is realized
 			RunWhenRealized(SubscribeCursorEnterLeaveEvent);
 
-			if (immediateCursorChange) // if realized and mouse inside set immediatly
+			if (immediateCursorChange && EventsRootWidget?.GdkWindow != null) // if realized and mouse inside set immediatly
 				EventsRootWidget.GdkWindow.Cursor = gdkCursor;
 		}
 
@@ -686,7 +686,7 @@ namespace Xwt.GtkBackend
 		void HandleKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
 		{
 			KeyEventArgs kargs = GetKeyReleaseEventArgs (args);
-			if (kargs == null)
+			if (kargs == null || destroyed)
 				return;
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnKeyReleased (kargs);
