@@ -198,6 +198,8 @@ namespace Xwt.GtkBackend
 					var a = new ButtonEventArgs {
 						X = args.Event.X,
 						Y = args.Event.Y,
+						MultiplePress = args.Event.Type == Gdk.EventType.TwoButtonPress ? 2 :
+							args.Event.Type == Gdk.EventType.ThreeButtonPress ? 3 : 1,
 						Button = (PointerButton) args.Event.Button
 					};
 					EventSink.OnButtonReleased (a);
