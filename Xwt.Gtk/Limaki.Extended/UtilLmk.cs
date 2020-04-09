@@ -27,7 +27,7 @@
 
 namespace Xwt.GtkBackend
 {
-    public static class UtilLmk
+	public static class UtilLmk
     {
 
 		#if !XWT_GTK3
@@ -46,8 +46,8 @@ namespace Xwt.GtkBackend
 		    layout.GetPixelSize (out width, out height);
 		    using (var gc = new Gdk.GC (args.Event.Window)) {
 		        gc.Copy (widget.Style.TextGC (Gtk.StateType.Normal));
-		        Color color_a = widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
-		        Color color_b = widget.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
+		        var color_a = widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
+		        var color_b = widget.Style.Text (Gtk.StateType.Normal).ToXwtValue ();
 		        gc.RgbFgColor = color_b.BlendWith (color_a, 0.5).ToGtkValue ();
 
 		        args.Event.Window.DrawLayout (gc, 2, (wh - height) / 2, layout);

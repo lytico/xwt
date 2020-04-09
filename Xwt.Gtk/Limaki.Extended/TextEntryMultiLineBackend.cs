@@ -29,8 +29,7 @@ using Xwt.Backends;
 using Xwt.Drawing;
 
 namespace Xwt.GtkBackend {
-
-    #if !XWT_GTK3
+#if !XWT_GTK3
     /// <summary>
     /// MultiLine-TextEntryBackend
     /// uses Gtk.TextView instead of Gtk.Entry
@@ -169,7 +168,7 @@ namespace Xwt.GtkBackend {
         protected virtual void RenderPlaceholderText (object o, Gtk.ExposeEventArgs args) {
 	        var w = TextView.GetWindow (Gtk.TextWindowType.Text);
 	        if (!string.IsNullOrEmpty (PlaceholderText) && string.IsNullOrEmpty (Text) && args.Event.Window == w) {
-		        Util.RenderPlaceholderText (TextView, args, PlaceholderText, ref layout);
+		        UtilLmk.RenderPlaceholderText (TextView, args, PlaceholderText, ref layout);
 	        }
         }
 

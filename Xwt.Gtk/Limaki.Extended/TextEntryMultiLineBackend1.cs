@@ -409,7 +409,7 @@ namespace Xwt.GtkBackend {
         protected override void Dispose (bool disposing) {
             xLayout?.Dispose ();
             xLayout = null;
-            base.Dispose ();
+            base.Dispose (disposing);
         }
 
 
