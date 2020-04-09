@@ -33,7 +33,7 @@ using Xwt.CairoBackend;
 
 namespace Xwt.GtkBackend
 {
-	public class CanvasBackend: WidgetBackend, ICanvasBackend
+	public partial class CanvasBackend: WidgetBackend, ICanvasBackend
 	{
 		public CanvasBackend ()
 		{
@@ -73,7 +73,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public void AddChild (IWidgetBackend widget, Rectangle bounds)
+		void AddChild_ (IWidgetBackend widget, Rectangle bounds)
 		{
 			var w = ((IGtkWidgetBackend)widget).Widget;
 			Widget.Add (w);
