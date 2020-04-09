@@ -25,11 +25,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 namespace Xwt.GtkBackend
 {
+
+    public partial interface IGtkWidgetBackend {
+        void AllocEventBox ();
+    }
+
     public partial class WidgetBackend
     {
         protected bool IsDestroyed => destroyed;
+
+        void IGtkWidgetBackend.AllocEventBox () => AllocEventBox ();
     }
+
 }
