@@ -48,7 +48,7 @@ namespace Xwt.GtkBackend
 		protected override Gtk.SizeRequestMode OnGetRequestMode ()
 		{
 			// always in fixed mode, since we have fixed width-height relation
-			return (Gtk.SizeRequestMode)2;
+			return Gtk.SizeRequestMode.ConstantSize;
 		}
 
 		protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
