@@ -66,7 +66,7 @@
     <Compile Include="..\Xwt.Gtk\AssemblyInfo.Gtk3.cs">
       <Link>AssemblyInfo.Gtk3.cs</Link>
     </Compile>
-    <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\AccessibleBackend.cs">
+     <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\AccessibleBackend.cs">
       <Link>Xwt.GtkBackend\AccessibleBackend.cs</Link>
     </Compile>
     <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\TextLayoutBackendHandler.cs">
@@ -430,6 +430,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend1.cs">
+      <Link>Limaki.Extended\TextEntryMultiLineBackend1.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend.cs">
+      <Link>Limaki.Extended\TextEntryMultiLineBackend.cs</Link>
+    </Compile>
     <Compile Include="..\Xwt.Gtk\Limaki.Extended\CellUtil.cs">
       <Link>Limaki.Extended\CellUtil.cs</Link>
     </Compile>
@@ -439,11 +445,29 @@
     <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkClipboardBackend.cs">
       <Link>Limaki.Extended\GtkClipboardBackend.cs</Link>
     </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend1.cs">
-      <Link>Limaki.Extended\TextEntryMultiLineBackend1.cs</Link>
-    </Compile>
     <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextWrapper.cs">
       <Link>Limaki.Extended\TextWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\WidgetBackend.cs">
+      <Link>Limaki.Extended\WidgetBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\ListStoreBackend.cs">
+      <Link>Limaki.Extended\ListStoreBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkAlertDialog.cs">
+      <Link>Limaki.Extended\GtkAlertDialog.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TableViewBackend.cs">
+      <Link>Limaki.Extended\TableViewBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\UtilLmk.cs">
+      <Link>Limaki.Extended\UtilLmk.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\NotebookBackend.cs">
+      <Link>Limaki.Extended\NotebookBackend.cs</Link>
+    </Compile>
+   <Compile Include="..\Xwt.Gtk\Limaki.Extended\CanvasBackend.cs">
+      <Link>Limaki.Extended\CanvasBackend.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
