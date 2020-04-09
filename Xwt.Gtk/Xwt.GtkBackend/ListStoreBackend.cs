@@ -33,7 +33,7 @@ using TreeModel = Gtk.ITreeModel;
 
 namespace Xwt.GtkBackend
 {
-	public class ListStoreBackend: TableStoreBackend, IListStoreBackend
+	public partial class ListStoreBackend: TableStoreBackend, IListStoreBackend
 	{
 		public override TreeModel InitializeModel (Type[] columnTypes)
 		{
@@ -50,9 +50,10 @@ namespace Xwt.GtkBackend
 				if (RowChanged != null)
 					RowChanged (this, new ListRowEventArgs (args.Path.Indices[0]));
 			};
-			store.RowsReordered += (o, args) => {
-				if (RowsReordered != null) System.Diagnostics.Debug.WriteLine ($"No support for {nameof (RowsReordered)} events from {nameof (ListStoreBackend)}, sorry.");
-			};
+			InitializeModelFix(columnTypes, store);
+			// store.RowsReordered += (o, args) => {
+			// 	if (RowsReordered != null) System.Diagnostics.Debug.WriteLine ($"No support for {nameof (RowsReordered)} events from {nameof (ListStoreBackend)}, sorry.");
+			// };
 			return store;
 		}
 		
