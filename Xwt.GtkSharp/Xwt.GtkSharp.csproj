@@ -66,21 +66,6 @@
     <Compile Include="..\Xwt.Gtk\AssemblyInfo.Gtk3.cs">
       <Link>AssemblyInfo.Gtk3.cs</Link>
     </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\CellUtil.cs">
-      <Link>Limaki.Extended\CellUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\ConversionLmk.cs">
-      <Link>Limaki.Extended\ConversionLmk.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkClipboardBackend.cs">
-      <Link>Limaki.Extended\GtkClipboardBackend.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend1.cs">
-      <Link>Limaki.Extended\TextEntryMultiLineBackend1.cs</Link>
-    </Compile>
-    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextWrapper.cs">
-      <Link>Limaki.Extended\TextWrapper.cs</Link>
-    </Compile>
     <Compile Include="..\Xwt.Gtk\Xwt.GtkBackend\AccessibleBackend.cs">
       <Link>Xwt.GtkBackend\AccessibleBackend.cs</Link>
     </Compile>
@@ -443,6 +428,23 @@
     <Reference Include="PangoSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\libs\GtkSharp\PangoSharp.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\CellUtil.cs">
+      <Link>Limaki.Extended\CellUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\ConversionLmk.cs">
+      <Link>Limaki.Extended\ConversionLmk.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkClipboardBackend.cs">
+      <Link>Limaki.Extended\GtkClipboardBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend1.cs">
+      <Link>Limaki.Extended\TextEntryMultiLineBackend1.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextWrapper.cs">
+      <Link>Limaki.Extended\TextWrapper.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
 

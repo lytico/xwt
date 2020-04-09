@@ -430,4 +430,21 @@
       <LogicalName>searchbox-search-16~dark.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\CellUtil.cs">
+      <Link>Limaki.Extended\CellUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\ConversionLmk.cs">
+      <Link>Limaki.Extended\ConversionLmk.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\GtkClipboardBackend.cs">
+      <Link>Limaki.Extended\GtkClipboardBackend.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextEntryMultiLineBackend.cs">
+      <Link>Limaki.Extended\TextEntryMultiLineBackend1.cs</Link>
+    </Compile>
+    <Compile Include="..\Xwt.Gtk\Limaki.Extended\TextWrapper.cs">
+      <Link>Limaki.Extended\TextWrapper.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
