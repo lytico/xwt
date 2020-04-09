@@ -40,6 +40,7 @@ using GtkTreeModel = Gtk.ITreeModel;
 #else
 using GtkTreeModel = Gtk.TreeModel;
 #endif
+using System.Diagnostics;
 
 namespace Xwt.GtkBackend
 {
@@ -1130,7 +1131,8 @@ namespace Xwt.GtkBackend
 		public static void Set2xVariant (Gdk.Pixbuf px, Gdk.Pixbuf variant2x)
 		{
 		}
-
+		
+		[DebuggerStepThrough]
 		public static double GetScaleFactor (Gtk.Widget w)
 		{
 			if (!supportsHiResIcons)
