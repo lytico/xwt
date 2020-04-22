@@ -9,8 +9,8 @@
     ".NETStandard,Version=v2.0/": {
       "PangoSharp/1.0.0": {
         "dependencies": {
-          "CairoSharp": "1.0.0",
-          "GLibSharp": "1.0.0",
+          "CairoSharp": "3.22.24.30",
+          "GLibSharp": "3.22.24.30",
           "NETStandard.Library": "2.0.3"
         },
         "runtime": {
@@ -23,12 +23,12 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
-      "CairoSharp/1.0.0": {
+      "CairoSharp/3.22.24.30": {
         "runtime": {
           "CairoSharp.dll": {}
         }
       },
-      "GLibSharp/1.0.0": {
+      "GLibSharp/3.22.24.30": {
         "runtime": {
           "GLibSharp.dll": {}
         }
@@ -55,12 +55,12 @@
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
     },
-    "CairoSharp/1.0.0": {
+    "CairoSharp/3.22.24.30": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "GLibSharp/1.0.0": {
+    "GLibSharp/3.22.24.30": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
