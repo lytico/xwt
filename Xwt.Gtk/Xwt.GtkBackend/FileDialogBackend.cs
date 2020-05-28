@@ -137,7 +137,11 @@ namespace Xwt.GtkBackend
 		
 		public void Cleanup ()
 		{
+#if XWT_GTK3
+			dialog.Dispose ();
+#else			
 			dialog.Destroy ();
+#endif			
 		}
 
 		protected Gtk.FileChooserDialog Dialog {

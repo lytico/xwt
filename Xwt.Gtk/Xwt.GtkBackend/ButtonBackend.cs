@@ -316,7 +316,11 @@ namespace Xwt.GtkBackend
 			if (disposing && labelWidget != null) {
 				labelWidget.Realized -= HandleStyleUpdate;
 				labelWidget.StyleSet -= HandleStyleUpdate;
+#if XWT_GTK3
+				labelWidget.Dispose ();
+#else			
 				labelWidget.Destroy ();
+#endif				
 				labelWidget = null;
 			}
 			base.Dispose (disposing);
