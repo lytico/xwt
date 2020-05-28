@@ -274,7 +274,11 @@ namespace Xwt.GtkBackend
 		{
 			if (Widget != null && disposing && !destroyed) {
 				MarkDestroyed (Frontend);
+#if XWT_GTK3
+				Widget.Dispose ();
+#else			
 				Widget.Destroy ();
+#endif
 			}
 			if (IMContext != null)
 				IMContext.Dispose ();

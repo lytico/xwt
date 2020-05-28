@@ -70,7 +70,11 @@ namespace Xwt.GtkBackend
 
 		public void Dispose ()
 		{
+#if XWT_GTK3
+			dlg.Dispose ();
+#else			
 			dlg.Destroy ();
+#endif		
 		}
 
 		public Color Color {

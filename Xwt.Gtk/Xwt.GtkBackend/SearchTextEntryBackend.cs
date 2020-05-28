@@ -404,7 +404,11 @@ namespace Xwt.GtkBackend
 		protected override void OnDestroyed ()
 		{
 			if (menu != null) {
+#if XWT_GTK3
+				menu.Dispose();
+#else
 				menu.Destroy ();
+#endif				
 				menu = null;
 			}
 			base.OnDestroyed ();

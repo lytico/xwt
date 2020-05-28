@@ -109,7 +109,11 @@ namespace Xwt.GtkBackend
 		{
 			Gtk.MenuItem item = ((MenuItemBackend)menuItem).MenuItem;
 			menu.Remove (item);
+#if XWT_GTK3
+			item.Dispose ();
+#else			
 			item.Destroy ();
+#endif
 		}
 
 		public void EnableEvent (object eventId)

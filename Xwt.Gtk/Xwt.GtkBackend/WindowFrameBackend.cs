@@ -126,8 +126,11 @@ namespace Xwt.GtkBackend
 		{
 			#if !XWT_GTK3
 			Window.SizeRequested -= HandleSizeRequested;
-			#endif
 			Window.Destroy ();
+			#else
+			Window.Dispose();
+			#endif
+			
 		}
 		
 		public IWindowFrameEventSink EventSink {
