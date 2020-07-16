@@ -151,7 +151,11 @@ namespace Xwt.GtkBackend
 					break;
 				}
 			}
+#if XWT_GTK3
+			this.Dispose ();
+#else			
 			this.Destroy ();
+#endif
 		}
 	}
 }
