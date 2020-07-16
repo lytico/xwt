@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Xwt\Xwt.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GtkSharp" Version="3.22.25.98" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
@@ -405,29 +406,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Xwt.Gtk\icons\**\*.png" LinkBase="Resources" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="AtkSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\AtkSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="CairoSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\CairoSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="GdkSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\GdkSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="GioSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\GioSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="GLibSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\GLibSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="GtkSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\GtkSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="PangoSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\libs\GtkSharp\PangoSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
 
