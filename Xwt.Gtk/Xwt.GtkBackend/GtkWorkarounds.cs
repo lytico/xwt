@@ -151,7 +151,12 @@ namespace Xwt.GtkBackend
 			if (Platform.IsMac) {
 				try {
 					gdk_quartz_set_fix_modifiers (true);
-				} catch (EntryPointNotFoundException) {
+				}
+#if XWT_GTKSHARP3
+				catch (NullReferenceException) { 
+#else
+				catch (EntryPointNotFoundException) {
+#endif
 					oldMacKeyHacks = true;
 				}
 			}
@@ -444,8 +449,13 @@ namespace Xwt.GtkBackend
 		{
 			if (!scrollDeltasNotSupported) {
 				try {
-					return gdk_event_get_scroll_deltas (evt.Handle, out deltaX, out deltaY);
-				} catch (EntryPointNotFoundException) {
+					return gdk_event_get_scroll_deltas(evt.Handle, out deltaX, out deltaY);
+				}
+#if XWT_GTKSHARP3
+				catch (NullReferenceException) {
+#else
+				catch (EntryPointNotFoundException) {
+#endif
 					scrollDeltasNotSupported = true;
 				}
 			}
@@ -836,7 +846,7 @@ namespace Xwt.GtkBackend
 		static Dictionary<IntPtr,ForallDelegate> forallCallbacks;
 		static bool containerLeakFixed;
 
-#if !XWT_GTK3	
+#if !XWT_GTK3
 		// Works around BXC #3801 - Managed Container subclasses are incorrectly resurrected, then leak.
 		// It does this by registering an alternative callback for gtksharp_container_override_forall, which
 		// ignores callbacks if the wrapper no longer exists. This means that the objects no longer enter a
@@ -1031,7 +1041,12 @@ namespace Xwt.GtkBackend
 				gtk_scrolled_window_set_overlay_policy (sw.Handle, hpolicy, vpolicy);
 				return;
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException)	{
+#else
+			catch (EntryPointNotFoundException) {
+#endif
 			}
 		}
 
@@ -1045,7 +1060,12 @@ namespace Xwt.GtkBackend
 				gtk_scrolled_window_get_overlay_policy (sw.Handle, out hpolicy, out vpolicy);
 				return;
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException) {
+#else
+				catch (EntryPointNotFoundException) {
+#endif
 			}
 			hpolicy = vpolicy = 0;
 			canSetOverlayScrollbarPolicy = false;
@@ -1072,12 +1092,12 @@ namespace Xwt.GtkBackend
 				gtk_image_menu_item_set_always_show_image (mi.Handle, true);
 		}
 
-		#if XWT_GTK3
+#if XWT_GTK3
 		// GTK3: Temp workaround, since GTK 3 has gtk_widget_get_scale_factor, but no gtk_icon_set_render_icon_scaled
 		static bool supportsHiResIcons = false;
-		#else
+#else
 		static bool supportsHiResIcons = true;
-		#endif
+#endif
 
 		public static bool SetSourceScale (Gtk.IconSource source, double scale)
 		{
@@ -1088,7 +1108,12 @@ namespace Xwt.GtkBackend
 				gtk_icon_source_set_scale (source.Handle, scale);
 				return true;
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException) {
+#else
+			catch (EntryPointNotFoundException) {
+#endif
 			}
 			supportsHiResIcons = false;
 			return false;
@@ -1103,7 +1128,12 @@ namespace Xwt.GtkBackend
 				gtk_icon_source_set_scale_wildcarded (source.Handle, setting);
 				return true;
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException) {
+#else
+			catch (EntryPointNotFoundException) {
+#endif
 			}
 			supportsHiResIcons = false;
 			return false;
@@ -1121,7 +1151,12 @@ namespace Xwt.GtkBackend
 				else
 					return null;
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException){
+#else
+			catch (EntryPointNotFoundException) {
+#endif
 			}
 			supportsHiResIcons = false;
 			return null;
@@ -1139,7 +1174,12 @@ namespace Xwt.GtkBackend
 			try {
 				return gtk_widget_get_scale_factor (w.Handle);
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException) {
+#else
+				catch (EntryPointNotFoundException) {
+#endif
 			}
 			supportsHiResIcons = false;
 			return 1;
@@ -1153,7 +1193,12 @@ namespace Xwt.GtkBackend
 			try {
 				return gdk_screen_get_monitor_scale_factor (screen.Handle, monitor);
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException){
+#else
+			catch (EntryPointNotFoundException) {
+#endif
 			}
 			supportsHiResIcons = false;
 			return 1;
@@ -1175,7 +1220,12 @@ namespace Xwt.GtkBackend
 				GLib.Marshaller.Free (intPtr);
 				return result;
 			} catch (DllNotFoundException) {
-			} catch (EntryPointNotFoundException) {
+			}
+#if XWT_GTKSHARP3
+			catch (NullReferenceException) {
+#else
+			catch (EntryPointNotFoundException) {
+#endif
 			}
 			supportsHiResIcons = false;
 			return null;
@@ -1184,11 +1234,11 @@ namespace Xwt.GtkBackend
 
 		public static Gtk.Bin CreateComboBoxEntry()
 		{
-			#if XWT_GTK3
+#if XWT_GTK3
 			return Gtk.ComboBoxText.NewWithEntry ();
-			#else
+#else
 			return new Gtk.ComboBoxEntry ();
-			#endif
+#endif
 		}
 
 
@@ -1227,18 +1277,18 @@ namespace Xwt.GtkBackend
 		
 		public static Gtk.Box GetMessageArea(this Gtk.MessageDialog dialog)
 		{
-			#if XWT_GTK3
+#if XWT_GTK3
 			// according to Gtk docs MessageArea should always be a Gtk.Box, but we test this
 			// to be on the safe side.
 			var messageArea = dialog.MessageArea as Gtk.Box;
 			return messageArea ?? dialog.ContentArea;
-			#else
+#else
 			if (GtkWorkarounds.GtkMajorVersion <= 2 && GtkWorkarounds.GtkMinorVersion < 22) // message area not present before 2.22
 				return dialog.VBox;
 			IntPtr raw_ret = gtk_message_dialog_get_message_area(dialog.Handle);
 			Gtk.Box ret = GLib.Object.GetObject(raw_ret) as Gtk.Box;
 			return ret;
-			#endif
+#endif
 		}
 
 		public static void StopSignal (this GLib.Object gobject, string signalid)
@@ -1348,22 +1398,22 @@ namespace Xwt.GtkBackend
 
 			using (var attr = iter.SafeGetCopy (Pango.AttrType.Foreground)) {
 				if (attr != null) {
-					#if XWT_GTK3
+#if XWT_GTK3
 					tag.Foreground = ((Pango.AttrForeground)attr).Color.ToString();
-					#else
+#else
 					tag.Foreground = ((Gdk.PangoAttrEmbossColor)attr).Color.ToString ();
-					#endif
+#endif
 					result = true;
 				}
 			}
 
 			using (var attr = iter.SafeGetCopy (Pango.AttrType.Background)) {
 				if (attr != null) {
-				#if XWT_GTK3
+#if XWT_GTK3
 					tag.Foreground = ((Pango.AttrBackground)attr).Color.ToString();
-					#else
+#else
 					tag.Background = ((Gdk.PangoAttrEmbossColor)attr).Color.ToString ();
-					#endif
+#endif
 					result = true;
 				}
 			}
