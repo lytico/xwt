@@ -84,13 +84,13 @@
   <Import Project="..\BuildHelpers.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Xwt.Gtk\Xwt.Gtk.csproj">
-      <Project>{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}</Project>
-      <Name>Xwt.Gtk</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xwt\Xwt.csproj">
       <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
       <Name>Xwt</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xwt.Gtk2\Xwt.Gtk2.csproj">
+      <Project>{F2DE3BAD-78D5-4470-96F3-7FACB7391408}</Project>
+      <Name>Xwt.Gtk2</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
