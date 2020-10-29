@@ -95,9 +95,9 @@ namespace Xwt.GtkBackend
 				});
 			}
 
-			if (Widget.WidthRequest > min_width)
+			if (Widget.WidthRequest > min_width || (widthConstraint.IsConstrained && Widget.RequestMode==Gtk.SizeRequestMode.ConstantSize))
 				min_width = Widget.WidthRequest;
-			if (Widget.HeightRequest > min_height)
+			if (Widget.HeightRequest > min_height || (heightConstraint.IsConstrained && Widget.RequestMode==Gtk.SizeRequestMode.ConstantSize))
 				min_height = Widget.HeightRequest;
 
 			if (Frontend.MinWidth > 0 && Frontend.MinWidth > min_width)
