@@ -137,6 +137,7 @@ namespace Xwt.GtkBackend
 		public void SetSizeRequest (double width, double height)
 		{
 			UpdateSizeRequests ();
+			Widget.QueueResize ();
 		}
 
 		void EnableSizeCheckEvents ()
