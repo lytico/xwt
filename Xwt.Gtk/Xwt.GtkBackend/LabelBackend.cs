@@ -42,7 +42,12 @@ namespace Xwt.GtkBackend
 
 		public LabelBackend ()
 		{
+#if XWT_GTKSHARP3
+			Widget = new GtkSizedLabel ();
+#else
 			Widget = new Gtk.Label ();
+#endif
+	
 			Label.Show ();
 			Label.Xalign = 0;
 			Label.Yalign = 0.5f;

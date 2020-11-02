@@ -24,11 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Cairo;
 
 namespace Xwt.GtkBackend
 {
 	public partial class LabelBackend
 	{
+		public class GtkSizedLabel : Gtk.Label {
+
+			protected override bool OnDrawn (Context cr) {
+				var bounds = cr.ClipExtents ();
+				if (this.WidthRequest > 0) {
+				    bounds = new Cairo.Rectangle (bounds.X, bounds.Y, WidthRequest, bounds.Height);
+				    cr.Rectangle (bounds);
+				    cr.Clip ();
+				}
+
+
+				return base.OnDrawn (cr);
+			}
+		}
+
 		void SetAlignmentGtk ()
 		{
 			switch (TextAlignment) {
